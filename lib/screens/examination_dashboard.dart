@@ -3,7 +3,10 @@ import 'sidebar.dart' as sidebar;
 import 'announcement_screen.dart';
 import 'submit_grades.dart';
 import 'verify_grades.dart';
+import 'update_grades.dart'; // Import the UpdateGradesScreen
 import 'generate_transcript.dart';
+import 'result.dart'; // Import the ResultScreen
+import 'validate_grades.dart'; // Import the ValidateGradesScreen
 
 class ExaminationDashboard extends StatefulWidget {
   const ExaminationDashboard({super.key});
@@ -43,28 +46,20 @@ class _ExaminationDashboardState extends State<ExaminationDashboard> {
             builder: (context) => const GenerateTranscriptScreen()),
       );
     } else if (index == 6) {
-      // Handle Validate Grades navigation
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Navigating to Validate Grades'),
-          duration: Duration(seconds: 1),
-        ),
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ValidateGradesScreen()),
       );
     } else if (index == 7) {
       // Handle Update Grades navigation
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Navigating to Update Grades'),
-          duration: Duration(seconds: 1),
-        ),
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const UpdateGradesScreen()),
       );
     } else if (index == 8) {
-      // Handle Result navigation
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Navigating to Result'),
-          duration: Duration(seconds: 1),
-        ),
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ResultScreen()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -198,7 +193,7 @@ class _ExaminationDashboardState extends State<ExaminationDashboard> {
                   _buildDashboardCard(
                     icon: Icons.assessment,
                     label: 'Result',
-                    color: Colors.amber,
+                    color: Colors.indigo,
                     onTap: () => _handleNavigation(8),
                   ),
                 ],

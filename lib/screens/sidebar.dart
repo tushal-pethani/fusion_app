@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'submit_grades.dart';
+import 'update_grades.dart'; // Import the UpdateGradesScreen
 
 class Sidebar extends StatefulWidget {
   final Function(int)? onItemSelected;
@@ -431,6 +433,17 @@ class _SidebarState extends State<Sidebar> {
                       icon: Icons.assessment,
                       title: 'Result',
                       index: 8),
+                  ListTile(
+                    leading: const Icon(Icons.assessment),
+                    title: const Text('View Results'),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ResultScreen()),
+                      );
+                    },
+                  ),
                 ],
 
                 // File Tracking Module
@@ -884,6 +897,12 @@ class _SidebarState extends State<Sidebar> {
             context,
             MaterialPageRoute(builder: (context) => const SubmitGradesScreen()),
           );
+        } else if (index == 7) {
+          // Navigate to Update Grades screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const UpdateGradesScreen()),
+          );
         }
         // Notify parent about selection
         if (widget.onItemSelected != null) {
@@ -905,6 +924,38 @@ class SubmitGradesScreen extends StatelessWidget {
       ),
       body: const Center(
         child: Text('Submit Grades Screen'),
+      ),
+    );
+  }
+}
+
+class ResultScreen extends StatelessWidget {
+  const ResultScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('View Results'),
+      ),
+      body: const Center(
+        child: Text('Result Screen'),
+      ),
+    );
+  }
+}
+
+class UpdateGradesScreen extends StatelessWidget {
+  const UpdateGradesScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Update Grades'),
+      ),
+      body: const Center(
+        child: Text('Update Grades Screen'),
       ),
     );
   }

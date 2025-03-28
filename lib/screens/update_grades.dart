@@ -3,14 +3,14 @@ import 'package:fl_chart/fl_chart.dart';
 import 'examination_dashboard.dart';
 import 'sidebar.dart';
 
-class VerifyGradesScreen extends StatefulWidget {
-  const VerifyGradesScreen({Key? key}) : super(key: key);
+class UpdateGradesScreen extends StatefulWidget {
+  const UpdateGradesScreen({Key? key}) : super(key: key);
 
   @override
-  State<VerifyGradesScreen> createState() => _VerifyGradesScreenState();
+  State<UpdateGradesScreen> createState() => _UpdateGradesScreenState();
 }
 
-class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
+class _UpdateGradesScreenState extends State<UpdateGradesScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String? _selectedCourse;
   String? _selectedYear;
@@ -19,52 +19,332 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
   bool _showResults = false;
 
   final List<Map<String, String>> _dummyData = [
-    {'Student ID': '22BCS184', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'A+'},
-    {'Student ID': '22BCS188', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'A+'},
-    {'Student ID': '22BCS201', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'B+'},
-    {'Student ID': '22BCS001', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'C+'},
-    {'Student ID': '22BCS202', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'F'},
-    {'Student ID': '22BCS101', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'A'},
-    {'Student ID': '22BCS102', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'B'},
-    {'Student ID': '22BCS103', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'C'},
-    {'Student ID': '22BCS104', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'D'},
-    {'Student ID': '22BCS105', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'D+'},
-    {'Student ID': '22BCS106', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'CD', 'Grades': 'CD'},
-    {'Student ID': '22BCS107', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'A'},
-    {'Student ID': '22BCS108', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'B+'},
-    {'Student ID': '22BCS109', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'A+'},
-    {'Student ID': '22BCS110', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'B'},
-    {'Student ID': '22BCS111', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'C+'},
-    {'Student ID': '22BCS112', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'C'},
-    {'Student ID': '22BCS113', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'D+'},
-    {'Student ID': '22BCS114', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'A'},
-    {'Student ID': '22BCS115', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'B'},
-    {'Student ID': '22BCS116', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'CD', 'Grades': 'CD'},
-    {'Student ID': '22BCS117', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'A+'},
-    {'Student ID': '22BCS118', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'B+'},
-    {'Student ID': '22BCS119', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'C+'},
-    {'Student ID': '22BCS120', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'D'},
-    {'Student ID': '22BCS121', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'F'},
-    {'Student ID': '22BCS122', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'A'},
-    {'Student ID': '22BCS123', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'B'},
-    {'Student ID': '22BCS124', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'C'},
-    {'Student ID': '22BCS125', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'A+'},
-    {'Student ID': '22BCS126', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'B+'},
-    {'Student ID': '22BCS127', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'CD', 'Grades': 'CD'},
-    {'Student ID': '22BCS128', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'D+'},
-    {'Student ID': '22BCS129', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'C'},
-    {'Student ID': '22BCS130', 'Batch': '2022', 'Semester': '1', 'Course ID': 'CS2003', 'Remarks': 'S', 'Grades': 'F'},
+    {
+      'Student ID': '22BCS184',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'A+'
+    },
+    {
+      'Student ID': '22BCS188',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'A+'
+    },
+    {
+      'Student ID': '22BCS201',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'B+'
+    },
+    {
+      'Student ID': '22BCS001',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'C+'
+    },
+    {
+      'Student ID': '22BCS202',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'F'
+    },
+    {
+      'Student ID': '22BCS101',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'A'
+    },
+    {
+      'Student ID': '22BCS102',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'B'
+    },
+    {
+      'Student ID': '22BCS103',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'C'
+    },
+    {
+      'Student ID': '22BCS104',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'D'
+    },
+    {
+      'Student ID': '22BCS105',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'D+'
+    },
+    {
+      'Student ID': '22BCS106',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'CD',
+      'Grades': 'CD'
+    },
+    {
+      'Student ID': '22BCS107',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'A'
+    },
+    {
+      'Student ID': '22BCS108',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'B+'
+    },
+    {
+      'Student ID': '22BCS109',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'A+'
+    },
+    {
+      'Student ID': '22BCS110',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'B'
+    },
+    {
+      'Student ID': '22BCS111',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'C+'
+    },
+    {
+      'Student ID': '22BCS112',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'C'
+    },
+    {
+      'Student ID': '22BCS113',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'D+'
+    },
+    {
+      'Student ID': '22BCS114',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'A'
+    },
+    {
+      'Student ID': '22BCS115',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'B'
+    },
+    {
+      'Student ID': '22BCS116',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'CD',
+      'Grades': 'CD'
+    },
+    {
+      'Student ID': '22BCS117',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'A+'
+    },
+    {
+      'Student ID': '22BCS118',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'B+'
+    },
+    {
+      'Student ID': '22BCS119',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'C+'
+    },
+    {
+      'Student ID': '22BCS120',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'D'
+    },
+    {
+      'Student ID': '22BCS121',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'F'
+    },
+    {
+      'Student ID': '22BCS122',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'A'
+    },
+    {
+      'Student ID': '22BCS123',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'B'
+    },
+    {
+      'Student ID': '22BCS124',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'C'
+    },
+    {
+      'Student ID': '22BCS125',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'A+'
+    },
+    {
+      'Student ID': '22BCS126',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'B+'
+    },
+    {
+      'Student ID': '22BCS127',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'CD',
+      'Grades': 'CD'
+    },
+    {
+      'Student ID': '22BCS128',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'D+'
+    },
+    {
+      'Student ID': '22BCS129',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'C'
+    },
+    {
+      'Student ID': '22BCS130',
+      'Batch': '2022',
+      'Semester': '1',
+      'Course ID': 'CS2003',
+      'Remarks': 'S',
+      'Grades': 'F'
+    },
   ];
 
   final List<Map<String, dynamic>> _gradeDistribution = [
-    {'grade': 'A+', 'count': 5, 'color': Colors.blue.shade800, 'percentage': 14},
+    {
+      'grade': 'A+',
+      'count': 5,
+      'color': Colors.blue.shade800,
+      'percentage': 14
+    },
     {'grade': 'A', 'count': 4, 'color': Colors.blue.shade600, 'percentage': 11},
-    {'grade': 'B+', 'count': 5, 'color': Colors.green.shade700, 'percentage': 14},
-    {'grade': 'B', 'count': 4, 'color': Colors.green.shade600, 'percentage': 11},
-    {'grade': 'C+', 'count': 3, 'color': Colors.yellow.shade700, 'percentage': 9},
-    {'grade': 'C', 'count': 4, 'color': Colors.orange.shade600, 'percentage': 11},
-    {'grade': 'D+', 'count': 3, 'color': Colors.orange.shade800, 'percentage': 9},
-    {'grade': 'D', 'count': 2, 'color': Colors.deepOrange.shade600, 'percentage': 6},
+    {
+      'grade': 'B+',
+      'count': 5,
+      'color': Colors.green.shade700,
+      'percentage': 14
+    },
+    {
+      'grade': 'B',
+      'count': 4,
+      'color': Colors.green.shade600,
+      'percentage': 11
+    },
+    {
+      'grade': 'C+',
+      'count': 3,
+      'color': Colors.yellow.shade700,
+      'percentage': 9
+    },
+    {
+      'grade': 'C',
+      'count': 4,
+      'color': Colors.orange.shade600,
+      'percentage': 11
+    },
+    {
+      'grade': 'D+',
+      'count': 3,
+      'color': Colors.orange.shade800,
+      'percentage': 9
+    },
+    {
+      'grade': 'D',
+      'count': 2,
+      'color': Colors.deepOrange.shade600,
+      'percentage': 6
+    },
     {'grade': 'F', 'count': 3, 'color': Colors.red.shade600, 'percentage': 9},
     {'grade': 'CD', 'count': 3, 'color': Colors.grey.shade600, 'percentage': 9},
   ];
@@ -83,7 +363,9 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
   }
 
   void _searchGrades() {
-    if (_selectedCourse == null || _selectedYear == null || _selectedSemester == null) {
+    if (_selectedCourse == null ||
+        _selectedYear == null ||
+        _selectedSemester == null) {
       _showSnackBar('Please fill all required fields', isError: true);
       return;
     }
@@ -118,7 +400,7 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
       case 6:
         return 'Profile';
       case 7:
-        return 'Settings';
+        return 'Update Grades';
       case 8:
         return 'Help';
       case 9:
@@ -130,13 +412,21 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
 
   String _calculateAverageGrade() {
     Map<String, double> gradeValues = {
-      'A+': 10.0, 'A': 9.0, 'B+': 8.0, 'B': 7.0, 'C+': 6.0, 
-      'C': 5.0, 'D+': 4.0, 'D': 3.0, 'F': 0.0, 'CD': 0.0
+      'A+': 10.0,
+      'A': 9.0,
+      'B+': 8.0,
+      'B': 7.0,
+      'C+': 6.0,
+      'C': 5.0,
+      'D+': 4.0,
+      'D': 3.0,
+      'F': 0.0,
+      'CD': 0.0
     };
-    
+
     double totalPoints = 0;
     int validGrades = 0;
-    
+
     for (var student in _dummyData) {
       String grade = student['Grades'] ?? '';
       if (grade != 'CD') {
@@ -144,15 +434,16 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
         validGrades++;
       }
     }
-    
+
     double average = validGrades > 0 ? totalPoints / validGrades : 0;
     return average.toStringAsFixed(1);
   }
-  
+
   int _calculateFailedStudents() {
-    return _dummyData.where((student) => 
-      student['Grades'] == 'F' || student['Grades'] == 'CD'
-    ).length;
+    return _dummyData
+        .where(
+            (student) => student['Grades'] == 'F' || student['Grades'] == 'CD')
+        .length;
   }
 
   @override
@@ -164,7 +455,7 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: const Text(
-          'Verify Grades',
+          'Update Grades',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         elevation: 0,
@@ -193,8 +484,8 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
       drawer: Sidebar(
         onItemSelected: (index) {
           Navigator.pop(context);
-          if (index == 4) {
-            // Already on Verify Grades screen
+          if (index == 7) {
+            // Already on Update Grades screen
           } else if (index == 0) {
             Navigator.pop(context);
           } else {
@@ -217,14 +508,23 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
                         hintText: 'Select Course',
                       ),
                       items: const [
-                        DropdownMenuItem(value: 'CS101', child: Text('CS101 - Introduction to Programming')),
-                        DropdownMenuItem(value: 'CS201', child: Text('CS201 - Data Structures')),
-                        DropdownMenuItem(value: 'CS301', child: Text('CS301 - Database Systems')),
-                        DropdownMenuItem(value: 'CS401', child: Text('CS401 - Machine Learning')),
+                        DropdownMenuItem(
+                            value: 'CS101',
+                            child: Text('CS101 - Introduction to Programming')),
+                        DropdownMenuItem(
+                            value: 'CS201',
+                            child: Text('CS201 - Data Structures')),
+                        DropdownMenuItem(
+                            value: 'CS301',
+                            child: Text('CS301 - Database Systems')),
+                        DropdownMenuItem(
+                            value: 'CS401',
+                            child: Text('CS401 - Machine Learning')),
                       ],
                       onChanged: (value) {
                         setState(() {
@@ -241,13 +541,17 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
                         hintText: 'Select Academic Year',
                       ),
                       items: const [
-                        DropdownMenuItem(value: '2022-2023', child: Text('2022-2023')),
-                        DropdownMenuItem(value: '2023-2024', child: Text('2023-2024')),
-                        DropdownMenuItem(value: '2024-2025', child: Text('2024-2025')),
+                        DropdownMenuItem(
+                            value: '2022-2023', child: Text('2022-2023')),
+                        DropdownMenuItem(
+                            value: '2023-2024', child: Text('2023-2024')),
+                        DropdownMenuItem(
+                            value: '2024-2025', child: Text('2024-2025')),
                       ],
                       onChanged: (value) {
                         setState(() {
@@ -264,7 +568,8 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
                         hintText: 'Select Semester',
                       ),
                       items: const [
@@ -334,26 +639,77 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: DataTable(
-                          headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                          headingRowColor:
+                              MaterialStateProperty.all(Colors.grey.shade100),
+                          columnSpacing: 16,
+                          horizontalMargin: 12,
+                          dataRowMinHeight: 40, // Set minimum row height
+                          dataRowMaxHeight: 55, // Set maximum row height
+                          headingTextStyle: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                          dataTextStyle: const TextStyle(
+                            fontSize: 13,
+                          ),
                           columns: const [
-                            DataColumn(label: Text('Student ID', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                            DataColumn(label: Text('Batch', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                            DataColumn(label: Text('Semester', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                            DataColumn(label: Text('Course ID', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                            DataColumn(label: Text('Remarks', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-                            DataColumn(label: Text('Grades', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+                            DataColumn(
+                                label: Text('Student ID',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Batch',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Sem',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Course',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Remarks',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Grade',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
                           ],
                           rows: _dummyData
                               .map(
                                 (data) => DataRow(
                                   cells: [
-                                    DataCell(Text(data['Student ID'] ?? '', textAlign: TextAlign.center)),
-                                    DataCell(Text(data['Batch'] ?? '', textAlign: TextAlign.center)),
-                                    DataCell(Text(data['Semester'] ?? '', textAlign: TextAlign.center)),
-                                    DataCell(Text(data['Course ID'] ?? '', textAlign: TextAlign.center)),
-                                    DataCell(Text(data['Remarks'] ?? '', textAlign: TextAlign.center)),
+                                    DataCell(Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                      child: Text(data['Student ID'] ?? ''),
+                                    )),
+                                    DataCell(Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                      child: Text(data['Batch'] ?? ''),
+                                    )),
+                                    DataCell(Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                      child: Text(data['Semester'] ?? ''),
+                                    )),
+                                    DataCell(Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                      child: Text(data['Course ID'] ?? ''),
+                                    )),
+                                    DataCell(Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                      child: Text(data['Remarks'] ?? ''),
+                                    )),
                                     DataCell(
-                                      _buildGradeTag(data['Grades'] ?? ''),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                        child: Container(
+                                          width: 50,
+                                          child: _buildGradeTag(data['Grades'] ?? ''),
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -383,7 +739,8 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
                             padding: const EdgeInsets.all(16.0),
                             child: Row(
                               children: [
-                                Icon(Icons.pie_chart, color: Colors.blue.shade700),
+                                Icon(Icons.pie_chart,
+                                    color: Colors.blue.shade700),
                                 const SizedBox(width: 8),
                                 const Text(
                                   'Grade Distribution',
@@ -398,9 +755,9 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
                           const Divider(height: 1),
                           LayoutBuilder(
                             builder: (context, constraints) {
-                              return isSmallScreen 
-                                ? _buildVerticalChartLayout()
-                                : _buildHorizontalChartLayout();
+                              return isSmallScreen
+                                  ? _buildVerticalChartLayout()
+                                  : _buildHorizontalChartLayout();
                             },
                           ),
                         ],
@@ -431,7 +788,8 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
                             padding: const EdgeInsets.all(16.0),
                             child: Row(
                               children: [
-                                Icon(Icons.analytics, color: Colors.blue.shade700),
+                                Icon(Icons.analytics,
+                                    color: Colors.blue.shade700),
                                 const SizedBox(width: 8),
                                 const Text(
                                   'Grade Statistics',
@@ -452,20 +810,18 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
                                   children: [
                                     Expanded(
                                       child: _buildEnhancedStatCard(
-                                        'Batch Average', 
-                                        _calculateAverageGrade(), 
-                                        Icons.grade, 
-                                        Colors.indigo.shade600
-                                      ),
+                                          'Batch Average',
+                                          _calculateAverageGrade(),
+                                          Icons.grade,
+                                          Colors.indigo.shade600),
                                     ),
                                     const SizedBox(width: 16),
                                     Expanded(
                                       child: _buildEnhancedStatCard(
-                                        'Passing Rate', 
-                                        '83%', 
-                                        Icons.check_circle, 
-                                        Colors.green.shade600
-                                      ),
+                                          'Passing Rate',
+                                          '83%',
+                                          Icons.check_circle,
+                                          Colors.green.shade600),
                                     ),
                                   ],
                                 ),
@@ -474,22 +830,50 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
                                   children: [
                                     Expanded(
                                       child: _buildEnhancedStatCard(
-                                        'Total Students', 
-                                        '${_dummyData.length}', 
-                                        Icons.people, 
-                                        Colors.blue.shade700
-                                      ),
+                                          'Total Students',
+                                          '${_dummyData.length}',
+                                          Icons.people,
+                                          Colors.blue.shade700),
                                     ),
                                     const SizedBox(width: 16),
                                     Expanded(
                                       child: _buildEnhancedStatCard(
-                                        'Total Failed', 
-                                        '${_calculateFailedStudents()}', 
-                                        Icons.warning, 
-                                        Colors.red.shade600
-                                      ),
+                                          'Total Failed',
+                                          '${_calculateFailedStudents()}',
+                                          Icons.warning,
+                                          Colors.red.shade600),
                                     ),
                                   ],
+                                ),
+                                const SizedBox(height: 24),
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    _showSnackBar('All grades verified successfully');
+                                  },
+                                  icon: const Icon(Icons.check_circle),
+                                  label: const Text('Verify'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blue.shade700,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    minimumSize: const Size(double.infinity, 45),
+                                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    _showSnackBar('Re-submission allowed for selected grades');
+                                  },
+                                  icon: const Icon(Icons.refresh),
+                                  label: const Text('Allow Re-Submission'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blue.shade700,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    minimumSize: const Size(double.infinity, 45),
+                                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ],
                             ),
@@ -580,8 +964,6 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
     );
   }
 
-
-
   Widget _buildHorizontalChartLayout() {
     return SizedBox(
       height: 350,
@@ -632,7 +1014,8 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
                   _touchedIndex = -1;
                   return;
                 }
-                _touchedIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
+                _touchedIndex =
+                    pieTouchResponse.touchedSection!.touchedSectionIndex;
               });
             },
           ),
@@ -703,18 +1086,15 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
                   child: Text(
                     'Grade',
                     style: TextStyle(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
                   ),
                 ),
                 Text(
                   'Count',
                   style: TextStyle(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
                 ),
                 Text(
                   'Percentage',
                   style: TextStyle(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
                 ),
               ],
             ),
@@ -743,12 +1123,12 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Text(grade['grade'], textAlign: TextAlign.center),
+                        Text(grade['grade']),
                       ],
                     ),
                   ),
-                  Text(grade['count'].toString(), textAlign: TextAlign.center),
-                  Text('${grade['percentage']}%', textAlign: TextAlign.center),
+                  Text(grade['count'].toString()),
+                  Text('${grade['percentage']}%'),
                 ],
               );
             }).toList(),
@@ -758,7 +1138,8 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
     );
   }
 
-  Widget _buildEnhancedStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildEnhancedStatCard(
+      String title, String value, IconData icon, Color color) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -850,12 +1231,12 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
     final Color primaryColor = _getGradeColor(grade);
     final Color secondaryColor = primaryColor.withOpacity(0.8);
     final String gradeDescription = _getGradeDescription(grade);
-    
+
     return Tooltip(
       message: gradeDescription,
       child: Container(
-        constraints: const BoxConstraints(minWidth: 50),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        constraints: const BoxConstraints(minWidth: 40, maxWidth: 50),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [primaryColor, secondaryColor],
@@ -877,7 +1258,7 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: 13,
+            fontSize: 12,
             letterSpacing: 0.5,
           ),
         ),
@@ -887,17 +1268,28 @@ class _VerifyGradesScreenState extends State<VerifyGradesScreen> {
 
   String _getGradeDescription(String grade) {
     switch (grade) {
-      case 'A+': return 'Outstanding - 10 points';
-      case 'A': return 'Excellent - 9 points';
-      case 'B+': return 'Very Good - 8 points';
-      case 'B': return 'Good - 7 points';
-      case 'C+': return 'Above Average - 6 points';
-      case 'C': return 'Average - 5 points';
-      case 'D+': return 'Below Average - 4 points';
-      case 'D': return 'Pass - 3 points';
-      case 'F': return 'Fail - 0 points';
-      case 'CD': return 'Course Dropped';
-      default: return 'Unknown Grade';
+      case 'A+':
+        return 'Outstanding - 10 points';
+      case 'A':
+        return 'Excellent - 9 points';
+      case 'B+':
+        return 'Very Good - 8 points';
+      case 'B':
+        return 'Good - 7 points';
+      case 'C+':
+        return 'Above Average - 6 points';
+      case 'C':
+        return 'Average - 5 points';
+      case 'D+':
+        return 'Below Average - 4 points';
+      case 'D':
+        return 'Pass - 3 points';
+      case 'F':
+        return 'Fail - 0 points';
+      case 'CD':
+        return 'Course Dropped';
+      default:
+        return 'Unknown Grade';
     }
   }
 }
