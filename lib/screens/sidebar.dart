@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'submit_grades.dart';
-import 'update_grades.dart'; // Import the UpdateGradesScreen
 
 class Sidebar extends StatefulWidget {
   final Function(int)? onItemSelected;

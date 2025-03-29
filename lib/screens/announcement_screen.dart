@@ -5,6 +5,7 @@ import 'package:path/path.dart' as path;
 import 'package:file_picker/file_picker.dart';
 import 'sidebar.dart';
 import 'examination_dashboard.dart';
+import 'gesture_sidebar.dart';
 
 class AnnouncementScreen extends StatefulWidget {
   const AnnouncementScreen({super.key});
@@ -262,625 +263,557 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text(
-          'Announcements',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.blue),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ExaminationDashboard(),
-              ),
-            );
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu, color: Colors.blue),
+    return GestureSidebar(
+      scaffoldKey: _scaffoldKey,
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: const Text(
+            'Announcements',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.blue),
             onPressed: () {
-              _scaffoldKey.currentState!.openDrawer();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExaminationDashboard(),
+                ),
+              );
             },
           ),
-        ],
-      ),
-      drawer: Sidebar(
-        onItemSelected: (index) {
-          Navigator.pop(context);
-          if (index == 2) {
-            // Already on Announcement screen
-          } else if (index == 0) {
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.menu, color: Colors.blue),
+              onPressed: () {
+                _scaffoldKey.currentState!.openDrawer();
+              },
+            ),
+          ],
+        ),
+        drawer: Sidebar(
+          onItemSelected: (index) {
             Navigator.pop(context);
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Navigating to ${_getScreenName(index)}'),
-                duration: const Duration(seconds: 1),
-              ),
-            );
-          }
-        },
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_isBrowseMode) {
-                        _toggleMode();
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _isBrowseMode ? Colors.blue.shade50 : Colors.blue,
-                      foregroundColor: _isBrowseMode ? Colors.blue : Colors.white,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          bottomLeft: Radius.circular(20),
+            if (index == 2) {
+              // Already on Announcement screen
+            } else if (index == 0) {
+              Navigator.pop(context);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Navigating to ${_getScreenName(index)}'),
+                  duration: const Duration(seconds: 1),
+                ),
+              );
+            }
+          },
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_isBrowseMode) {
+                          _toggleMode();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _isBrowseMode ? Colors.blue.shade50 : Colors.blue,
+                        foregroundColor: _isBrowseMode ? Colors.blue : Colors.white,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            bottomLeft: Radius.circular(20),
+                          ),
                         ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.notifications,
-                          color: _isBrowseMode ? Colors.blue : Colors.white,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Make New',
-                          style: TextStyle(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.notifications,
                             color: _isBrowseMode ? Colors.blue : Colors.white,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Make New',
+                            style: TextStyle(
+                              color: _isBrowseMode ? Colors.blue : Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: _toggleMode,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _isBrowseMode ? Colors.blue : Colors.blue.shade50,
+                        foregroundColor: _isBrowseMode ? Colors.white : Colors.blue,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _toggleMode,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _isBrowseMode ? Colors.blue : Colors.blue.shade50,
-                      foregroundColor: _isBrowseMode ? Colors.white : Colors.blue,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          bottomRight: Radius.circular(20),
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.folder_open,
-                          color: _isBrowseMode ? Colors.white : Colors.blue,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Browse',
-                          style: TextStyle(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.folder_open,
                             color: _isBrowseMode ? Colors.white : Colors.blue,
+                            size: 18,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              if (!_isBrowseMode) ...[
-                _buildFormField(
-                  label: 'Programme*',
-                  child: DropdownButtonFormField<String>(
-                    items: const [
-                      DropdownMenuItem(value: 'Programme 1', child: Text('Programme 1')),
-                      DropdownMenuItem(value: 'Programme 2', child: Text('Programme 2')),
-                    ],
-                    onChanged: (value) {},
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      hintText: 'Select Programme',
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                _buildFormField(
-                  label: 'Batch*',
-                  child: DropdownButtonFormField<String>(
-                    items: const [
-                      DropdownMenuItem(value: 'Batch 1', child: Text('Batch 1')),
-                      DropdownMenuItem(value: 'Batch 2', child: Text('Batch 2')),
-                    ],
-                    onChanged: (value) {},
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      hintText: 'Select Batch',
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                _buildFormField(
-                  label: 'Department*',
-                  child: DropdownButtonFormField<String>(
-                    items: const [
-                      DropdownMenuItem(value: 'Department 1', child: Text('Department 1')),
-                      DropdownMenuItem(value: 'Department 2', child: Text('Department 2')),
-                    ],
-                    onChanged: (value) {},
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      hintText: 'Select Department',
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                _buildFormField(
-                  label: 'Description',
-                  child: const TextField(
-                    maxLines: 5,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.all(16),
-                      hintText: 'Write here...',
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                _buildFormField(
-                  label: 'Attach Files',
-                  child: TextField(
-                    controller: _fileTextController,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      hintText: 'Upload Files (PDF, JPEG, PNG, JPG)',
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.upload_file, color: Colors.blue),
-                        onPressed: _showFilePickerOptions,
+                          const SizedBox(width: 8),
+                          Text(
+                            'Browse',
+                            style: TextStyle(
+                              color: _isBrowseMode ? Colors.white : Colors.blue,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    onTap: _showFilePickerOptions,
-                  ),
+                  ],
                 ),
-                if (_selectedFiles.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
+                const SizedBox(height: 24),
+                if (!_isBrowseMode) ...[
+                  _buildFormField(
+                    label: 'Programme*',
+                    child: DropdownButtonFormField<String>(
+                      items: const [
+                        DropdownMenuItem(value: 'Programme 1', child: Text('Programme 1')),
+                        DropdownMenuItem(value: 'Programme 2', child: Text('Programme 2')),
+                      ],
+                      onChanged: (value) {},
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        hintText: 'Select Programme',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildFormField(
+                    label: 'Batch*',
+                    child: DropdownButtonFormField<String>(
+                      items: const [
+                        DropdownMenuItem(value: 'Batch 1', child: Text('Batch 1')),
+                        DropdownMenuItem(value: 'Batch 2', child: Text('Batch 2')),
+                      ],
+                      onChanged: (value) {},
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        hintText: 'Select Batch',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildFormField(
+                    label: 'Department*',
+                    child: DropdownButtonFormField<String>(
+                      items: const [
+                        DropdownMenuItem(value: 'Department 1', child: Text('Department 1')),
+                        DropdownMenuItem(value: 'Department 2', child: Text('Department 2')),
+                      ],
+                      onChanged: (value) {},
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        hintText: 'Select Department',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildFormField(
+                    label: 'Description',
+                    child: const TextField(
+                      maxLines: 5,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.all(16),
+                        hintText: 'Write here...',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildFormField(
+                    label: 'Attach Files',
+                    child: TextField(
+                      controller: _fileTextController,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        hintText: 'Upload Files (PDF, JPEG, PNG, JPG)',
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.upload_file, color: Colors.blue),
+                          onPressed: _showFilePickerOptions,
+                        ),
+                      ),
+                      onTap: _showFilePickerOptions,
+                    ),
+                  ),
+                  if (_selectedFiles.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Selected Files:', style: TextStyle(fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 8),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              children: _selectedFiles.map((file) => _buildFileItem(file)).toList(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  const SizedBox(height: 16),
+                  _buildFormField(
+                    label: 'Upload Excel Sheet*',
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Selected Files:', style: TextStyle(fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(8),
+                        InkWell(
+                          onTap: _selectFile,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade400),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                                    child: Text(
+                                      _fileTextController.text.isEmpty
+                                          ? 'No file chosen'
+                                          : _fileTextController.text,
+                                      style: TextStyle(
+                                        color: _fileTextController.text.isEmpty
+                                            ? Colors.grey.shade600
+                                            : Colors.black,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue.shade50,
+                                    borderRadius: const BorderRadius.only(
+                                      topRight: Radius.circular(7.0),
+                                      bottomRight: Radius.circular(7.0),
+                                    ),
+                                  ),
+                                  child: TextButton(
+                                    onPressed: _selectFile,
+                                    style: TextButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                    ),
+                                    child: Text(
+                                      'Browse',
+                                      style: TextStyle(color: Colors.blue.shade700),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            children: _selectedFiles.map((file) => _buildFileItem(file)).toList(),
+                        ),
+                        const SizedBox(height: 4),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Row(
+                            children: [
+                              Icon(Icons.info_outline, size: 12, color: Colors.grey.shade600),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Accepts .xlsx, .xls or .csv files only',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade600,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                const SizedBox(height: 16),
-                _buildFormField(
-                  label: 'Upload Excel Sheet*',
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        onTap: _selectFile,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey.shade400),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  if (_isFileSelected && _selectedFile != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.insert_drive_file,
+                              color: Colors.blue,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _selectedFile!.name,
+                                    style: const TextStyle(fontWeight: FontWeight.w500),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                  Text(
+                                    '${(_selectedFile!.size / 1024).toStringAsFixed(1)} KB',
+                                    style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                              constraints: const BoxConstraints(),
+                              padding: EdgeInsets.zero,
+                              icon: const Icon(Icons.close, color: Colors.red, size: 20),
+                              onPressed: () {
+                                setState(() {
+                                  _isFileSelected = false;
+                                  _fileTextController.text = '';
+                                  _selectedFile = null;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_selectedFiles.isNotEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Files uploaded successfully!'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Announcement published!'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      child: const Text(
+                        'Publish',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ] else
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _dummyAnnouncements.length,
+                    itemBuilder: (context, index) {
+                      final announcement = _dummyAnnouncements[index];
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        elevation: 1.5,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AnnouncementDetailScreen(
+                                  announcement: announcement,
+                                ),
+                              ),
+                            );
+                          },
+                          borderRadius: BorderRadius.circular(10),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildAnnouncementLogo(announcement.sender),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  announcement.sender,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              Text(
+                                                announcement.date,
+                                                style: TextStyle(
+                                                  color: Colors.grey.shade700,
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 3),
+                                          Row(
+                                            children: [
+                                              _buildCompactTag('Academics'),
+                                              const SizedBox(width: 4),
+                                              _buildCompactTag('BTech'),
+                                              const SizedBox(width: 4),
+                                              _buildCompactTag('CSE'),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8),
                                   child: Text(
-                                    _fileTextController.text.isEmpty
-                                        ? 'No file chosen'
-                                        : _fileTextController.text,
-                                    style: TextStyle(
-                                      color: _fileTextController.text.isEmpty
-                                          ? Colors.grey.shade600
-                                          : Colors.black,
+                                    announcement.title,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                              ),
-                              Container(
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: Colors.blue.shade50,
-                                  borderRadius: const BorderRadius.only(
-                                    topRight: Radius.circular(7.0),
-                                    bottomRight: Radius.circular(7.0),
-                                  ),
-                                ),
-                                child: TextButton(
-                                  onPressed: _selectFile,
-                                  style: TextButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  ),
-                                  child: Text(
-                                    'Browse',
-                                    style: TextStyle(color: Colors.blue.shade700),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Row(
-                          children: [
-                            Icon(Icons.info_outline, size: 12, color: Colors.grey.shade600),
-                            const SizedBox(width: 4),
-                            Text(
-                              'Accepts .xlsx, .xls or .csv files only',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey.shade600,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (_isFileSelected && _selectedFile != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.insert_drive_file,
-                            color: Colors.blue,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _selectedFile!.name,
-                                  style: const TextStyle(fontWeight: FontWeight.w500),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                                Text(
-                                  '${(_selectedFile!.size / 1024).toStringAsFixed(1)} KB',
-                                  style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            constraints: const BoxConstraints(),
-                            padding: EdgeInsets.zero,
-                            icon: const Icon(Icons.close, color: Colors.red, size: 20),
-                            onPressed: () {
-                              setState(() {
-                                _isFileSelected = false;
-                                _fileTextController.text = '';
-                                _selectedFile = null;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_selectedFiles.isNotEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Files uploaded successfully!'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Announcement published!'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    child: const Text(
-                      'Publish',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ),
-              ] else
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _dummyAnnouncements.length,
-                  itemBuilder: (context, index) {
-                    final announcement = _dummyAnnouncements[index];
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 2,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AnnouncementDetailScreen(
-                                announcement: announcement,
-                              ),
-                            ),
-                          );
-                        },
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          padding: const EdgeInsets.all(16.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.blue.shade100, width: 1),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _buildAnnouncementLogo(announcement.sender),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                announcement.sender,
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey.shade100,
-                                                borderRadius: BorderRadius.circular(4),
-                                              ),
-                                              child: Text(
-                                                announcement.date,
-                                                style: TextStyle(
-                                                  color: Colors.grey.shade700,
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Wrap(
-                                          spacing: 2.0,
-                                          runSpacing: 2.0,
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue.shade50,
-                                                borderRadius: BorderRadius.circular(3),
-                                              ),
-                                              child: Text(
-                                                'Academics',
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: Colors.blue.shade700,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 2),
-                                            Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue.shade50,
-                                                borderRadius: BorderRadius.circular(3),
-                                              ),
-                                              child: Text(
-                                                'BTech',
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: Colors.blue.shade700,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 2),
-                                            Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue.shade50,
-                                                borderRadius: BorderRadius.circular(3),
-                                              ),
-                                              child: Text(
-                                                'CSE',
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: Colors.blue.shade700,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 12),
-                              Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade50,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      announcement.title,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      _getTruncatedDescription(announcement.description),
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey.shade800,
-                                        height: 1.3,
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if (announcement.hasAttachment)
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 12.0),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue.shade50,
-                                      borderRadius: BorderRadius.circular(6),
-                                      border: Border.all(color: Colors.blue.shade100),
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Text(
+                                    _getTruncatedDescription(announcement.description),
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey.shade800,
                                     ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                if (announcement.hasAttachment)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
                                     child: Row(
-                                      mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(
                                           Icons.attach_file,
-                                          size: 16,
+                                          size: 14,
                                           color: Colors.blue.shade700,
                                         ),
-                                        const SizedBox(width: 4),
+                                        const SizedBox(width: 3),
                                         Text(
                                           'Attachment',
                                           style: TextStyle(
                                             color: Colors.blue.shade700,
                                             fontWeight: FontWeight.w500,
-                                            fontSize: 12,
+                                            fontSize: 11,
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-            ],
+                      );
+                    },
+                  ),
+              ],
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Courses',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: 0,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.pop(context);
-          }
-        },
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              label: 'Courses',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          currentIndex: 0,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: true,
+          onTap: (index) {
+            if (index == 0) {
+              Navigator.pop(context);
+            }
+          },
+        ),
       ),
     );
   }
@@ -1097,6 +1030,24 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
     }
     return '${text.substring(0, 100)}...';
   }
+
+  Widget _buildCompactTag(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50,
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 10,
+          color: Colors.blue.shade700,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
 }
 
 class UploadFile {
@@ -1131,84 +1082,197 @@ class AnnouncementDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Announcement Details'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
         elevation: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.blue.shade900,
+        foregroundColor: Colors.white,
+        toolbarHeight: 0,
+        title: null,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Card(
-                margin: const EdgeInsets.only(bottom: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.blue.shade900,
+                    Colors.blue.shade700,
+                  ],
                 ),
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      border: Border.all(color: Colors.white, width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        color: Colors.white,
+                        child: Image.network(
+                          logoImages[imageIndex],
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Center(
+                              child: Text(
+                                announcement.sender[0],
+                                style: TextStyle(
+                                  color: Colors.blue.shade900,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            );
+                          },
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: Text(
+                                announcement.sender[0],
+                                style: TextStyle(
+                                  color: Colors.blue.shade900,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          announcement.sender,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          announcement.date,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            _buildHighContrastTag('Academics'),
+                            const SizedBox(width: 6),
+                            _buildHighContrastTag('BTech'),
+                            const SizedBox(width: 6),
+                            _buildHighContrastTag('CSE'),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.blue.shade100.withOpacity(0.5),
+                          blurRadius: 5,
+                          spreadRadius: 1,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      announcement.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.blue.shade900,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade200),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.shade200,
+                          blurRadius: 5,
+                          spreadRadius: 1,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      announcement.description,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey.shade900,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                  if (announcement.hasAttachment)
+                    Container(
+                      margin: const EdgeInsets.only(top: 12),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.blue.shade200),
+                      ),
+                      child: Row(
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(30),
-                            child: Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: Colors.blue.shade100,
-                                border: Border.all(color: Colors.blue.shade200, width: 2),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color.fromRGBO(
-                                      Colors.blue.shade100.red,
-                                      Colors.blue.shade100.green,
-                                      Colors.blue.shade100.blue,
-                                      0.5,
-                                    ),
-                                    spreadRadius: 2,
-                                    blurRadius: 5,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: Image.network(
-                                logoImages[imageIndex],
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return CircleAvatar(
-                                    backgroundColor: Colors.blue.shade100,
-                                    radius: 30,
-                                    child: Text(
-                                      announcement.sender[0],
-                                      style: TextStyle(
-                                        color: Colors.blue.shade700,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                loadingBuilder: (context, child, loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return Center(
-                                    child: Text(
-                                      announcement.sender[0],
-                                      style: TextStyle(
-                                        color: Colors.blue.shade700,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.shade100,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.attach_file,
+                              size: 20,
+                              color: Colors.blue.shade900,
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -1216,222 +1280,77 @@ class AnnouncementDetailScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        announcement.sender,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade100,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: Text(
-                                        announcement.date,
-                                        style: TextStyle(
-                                          color: Colors.grey.shade700,
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                Text(
+                                  'Attachment.pdf',
+                                  style: TextStyle(
+                                    color: Colors.blue.shade900,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
                                 ),
-                                const SizedBox(height: 4),
-                                Wrap(
-                                  spacing: 2.0,
-                                  runSpacing: 2.0,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: Colors.blue.shade50,
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                      child: Text(
-                                        'Academics',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          color: Colors.blue.shade700,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 2),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: Colors.blue.shade50,
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                      child: Text(
-                                        'BTech',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          color: Colors.blue.shade700,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 2),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: Colors.blue.shade50,
-                                        borderRadius: BorderRadius.circular(3),
-                                      ),
-                                      child: Text(
-                                        'CSE',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          color: Colors.blue.shade700,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                Text(
+                                  '245 KB',
+                                  style: TextStyle(
+                                    color: Colors.grey.shade800,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ],
                             ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Downloading...'),
+                                  duration: Duration(seconds: 1),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue.shade900,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              textStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              elevation: 2,
+                            ),
+                            child: const Text('Download'),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Color.fromRGBO(
-                            Colors.blue.shade50.red,
-                            Colors.blue.shade50.green,
-                            Colors.blue.shade50.blue,
-                            0.3,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.blue.shade100),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              announcement.title,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: Colors.blue.shade800,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey.shade200),
-                        ),
-                        child: Text(
-                          announcement.description,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey.shade800,
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
-                      if (announcement.hasAttachment)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.blue.shade50,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.blue.shade200),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.shade200,
-                                        spreadRadius: 1,
-                                        blurRadius: 3,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    Icons.attach_file,
-                                    size: 24,
-                                    color: Colors.blue.shade700,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Attachment.pdf',
-                                        style: TextStyle(
-                                          color: Colors.blue.shade700,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      Text(
-                                        '245 KB',
-                                        style: TextStyle(
-                                          color: Colors.grey.shade600,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                ElevatedButton.icon(
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Downloading attachment...'),
-                                        duration: Duration(seconds: 2),
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(Icons.download, size: 16),
-                                  label: const Text('Download'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blue.shade700,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
+                    ),
+                ],
               ),
-            ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildHighContrastTag(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(4),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 2,
+            spreadRadius: 0,
           ),
+        ],
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 10,
+          color: Colors.blue.shade900,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
@@ -1459,7 +1378,7 @@ class AnnouncementItem {
 final List<AnnouncementItem> _dummyAnnouncements = [
   AnnouncementItem(
     sender: 'Dr. Sarah Johnson',
-    department: 'Computer Science Department',
+    department: 'CSE',
     date: '22 Jun 2023',
     title: 'Important - Final Examination Schedule',
     description: 'The final examination for CS301 will be held on July 15, 2023 in Room 204. Please bring your student ID and necessary stationery. No electronic devices allowed except for approved calculators.',
@@ -1467,7 +1386,7 @@ final List<AnnouncementItem> _dummyAnnouncements = [
   ),
   AnnouncementItem(
     sender: 'Prof. Michael Chen',
-    department: 'Engineering Faculty',
+    department: 'Engineering',
     date: '18 Jun 2023',
     title: 'Workshop on AI and Machine Learning',
     description: 'We are pleased to announce a workshop on AI and Machine Learning taking place next week. All engineering students are encouraged to attend. This is a great opportunity to enhance your skills in this rapidly growing field.',
@@ -1475,7 +1394,7 @@ final List<AnnouncementItem> _dummyAnnouncements = [
   ),
   AnnouncementItem(
     sender: 'Admin Office',
-    department: 'University Administration',
+    department: 'Admin',
     date: '15 Jun 2023',
     title: 'Holiday Notice - University Foundation Day',
     description: 'This is to inform all students and faculty that the university will remain closed on June 30th to celebrate the University Foundation Day. All classes and administrative work will resume on July 1st.',
@@ -1483,7 +1402,7 @@ final List<AnnouncementItem> _dummyAnnouncements = [
   ),
   AnnouncementItem(
     sender: 'Library Services',
-    department: 'University Library',
+    department: 'Library',
     date: '10 Jun 2023',
     title: 'Extended Library Hours During Finals Week',
     description: 'The university library will extend its operating hours from 7 AM to midnight during the finals week (July 10-21). Additional study spaces will be available on the second floor.',
@@ -1491,7 +1410,7 @@ final List<AnnouncementItem> _dummyAnnouncements = [
   ),
   AnnouncementItem(
     sender: 'Dr. Emily Rodriguez',
-    department: 'Mathematics Department',
+    department: 'Mathematics',
     date: '05 Jun 2023',
     title: 'Math Tutoring Sessions Available',
     description: 'Free math tutoring sessions will be available for all students facing difficulties in Calculus I, II, and Linear Algebra. Sessions will be held every Tuesday and Thursday from 3-5 PM in Room 105.',

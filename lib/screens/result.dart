@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'examination_dashboard.dart';
 import 'sidebar.dart';
+import 'gesture_sidebar.dart';
 
 class ResultScreen extends StatefulWidget {
   const ResultScreen({Key? key}) : super(key: key);
@@ -65,156 +66,159 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text(
-          'Semester Results',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.blue),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ExaminationDashboard(),
-              ),
-            );
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu, color: Colors.blue),
+    return GestureSidebar(
+      scaffoldKey: _scaffoldKey,
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: const Text(
+            'Semester Results',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.blue),
             onPressed: () {
-              _scaffoldKey.currentState!.openDrawer();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExaminationDashboard(),
+                ),
+              );
             },
           ),
-        ],
-      ),
-      drawer: Sidebar(
-        onItemSelected: (index) {
-          Navigator.pop(context);
-          if (index == 8) {
-            // Already on Result screen
-          } else {
-            _showSnackBar('Navigating to another screen');
-          }
-        },
-      ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildFormField(
-                    label: 'Semester*',
-                    child: DropdownButtonFormField<String>(
-                      value: _selectedSemester,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.menu, color: Colors.blue),
+              onPressed: () {
+                _scaffoldKey.currentState!.openDrawer();
+              },
+            ),
+          ],
+        ),
+        drawer: Sidebar(
+          onItemSelected: (index) {
+            Navigator.pop(context);
+            if (index == 8) {
+              // Already on Result screen
+            } else {
+              _showSnackBar('Navigating to another screen');
+            }
+          },
+        ),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildFormField(
+                      label: 'Semester*',
+                      child: DropdownButtonFormField<String>(
+                        value: _selectedSemester,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          hintText: 'Select Semester',
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 16),
-                        hintText: 'Select Semester',
+                        items: _semesterItems,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedSemester = value;
+                          });
+                        },
                       ),
-                      items: _semesterItems,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedSemester = value;
-                        });
-                      },
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _viewResults,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        backgroundColor: Colors.blue.shade700,
-                        foregroundColor: Colors.white,
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _viewResults,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          backgroundColor: Colors.blue.shade700,
+                          foregroundColor: Colors.white,
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                         ),
+                        child: const Text('View Results'),
                       ),
-                      child: const Text('View Results'),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          if (_isLoading)
-            Container(
-              color: Colors.black.withOpacity(0.3),
-              child: Center(
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 20),
-                        Text(
-                          'Loading Results...',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+            if (_isLoading)
+              Container(
+                color: Colors.black.withOpacity(0.3),
+                child: Center(
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 20),
+                          Text(
+                            'Loading Results...',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Courses',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: 0,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ExaminationDashboard(),
-              ),
-            );
-          }
-        },
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              label: 'Courses',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          currentIndex: 0,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: true,
+          onTap: (index) {
+            if (index == 0) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExaminationDashboard(),
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -245,506 +249,509 @@ class ResultPreviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(
-          '$semester Results',
-          style: const TextStyle(fontWeight: FontWeight.bold),
+    return GestureSidebar(
+      scaffoldKey: scaffoldKey,
+      child: Scaffold(
+        key: scaffoldKey,
+        appBar: AppBar(
+          title: Text(
+            '$semester Results',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.blue),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.download, color: Colors.blue),
+              onPressed: () {
+                // Download functionality
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Downloading results...'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.share, color: Colors.blue),
+              onPressed: () {
+                // Share functionality
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Sharing results...'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+            ),
+          ],
         ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.blue),
-          onPressed: () {
+        drawer: Sidebar(
+          onItemSelected: (index) {
             Navigator.pop(context);
+            if (index == 8) {
+              // Already on Result screen
+            } else if (index == 0) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExaminationDashboard(),
+                ),
+              );
+            }
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.download, color: Colors.blue),
-            onPressed: () {
-              // Download functionality
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Downloading results...'),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.share, color: Colors.blue),
-            onPressed: () {
-              // Share functionality
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Sharing results...'),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      drawer: Sidebar(
-        onItemSelected: (index) {
-          Navigator.pop(context);
-          if (index == 8) {
-            // Already on Result screen
-          } else if (index == 0) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ExaminationDashboard(),
-              ),
-            );
-          }
-        },
-      ),
-      body: Container(
-        color: Colors.white,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Student Information Card
-                Card(
-                  elevation: 3,
-                  shadowColor: Colors.blue.shade200.withOpacity(0.5),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Header with title
-                        Row(
-                          children: [
-                            Icon(Icons.person,
-                                color: Colors.blue.shade700, size: 24),
-                            const SizedBox(width: 12),
-                            Text(
-                              'STUDENT INFORMATION',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue.shade800,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Divider(height: 24),
-
-                        // Student info
-                        Column(
-                          children: [
-                            // First row - Student Name and ID
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: _buildSimpleInfoItem(
-                                    label: 'Student Name',
-                                    value: 'Maitrek Patel',
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: _buildSimpleInfoItem(
-                                    label: 'Student ID',
-                                    value: '22BCS184',
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-
-                            // Second row - Program and Semester
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: _buildSimpleInfoItem(
-                                    label: 'Program',
-                                    value: 'CSE',
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: _buildSimpleInfoItem(
-                                    label: 'Current Semester',
-                                    value: semester,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Results Section Header
-                Container(
-                  width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.blue.shade600, Colors.blue.shade400],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blue.shade200.withOpacity(0.6),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(Icons.assessment,
-                            color: Colors.blue.shade700, size: 20),
-                      ),
-                      const SizedBox(width: 12),
-                      const Text(
-                        'SEMESTER RESULTS',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Course List
-                ...List.generate(5, (index) {
-                  final List<String> courseNames = [
-                    'Introduction to Programming',
-                    'Data Structures and Algorithms',
-                    'Linear Algebra',
-                    'Physics for Computing',
-                    'Technical Communication'
-                  ];
-
-                  final List<String> courseCodes = [
-                    'CS101',
-                    'CS201',
-                    'ES202',
-                    'PR101',
-                    'CE203'
-                  ];
-
-                  final List<String> grades = ['A', 'A+', 'B+', 'A', 'B'];
-                  final List<int> credits = [4, 3, 3, 4, 2];
-
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 12),
+        body: Container(
+          color: Colors.white,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Student Information Card
+                  Card(
                     elevation: 3,
-                    shadowColor: Colors.blue.shade100.withOpacity(0.7),
+                    shadowColor: Colors.blue.shade200.withOpacity(0.5),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.white, Colors.grey.shade50],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade200.withOpacity(0.5),
-                            blurRadius: 4,
-                            spreadRadius: 1,
-                            offset: const Offset(0, 1),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Header with title
+                          Row(
+                            children: [
+                              Icon(Icons.person,
+                                  color: Colors.blue.shade700, size: 24),
+                              const SizedBox(width: 12),
+                              Text(
+                                'STUDENT INFORMATION',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue.shade800,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                          const Divider(height: 24),
+
+                          // Student info
+                          Column(
+                            children: [
+                              // First row - Student Name and ID
+                              Row(
                                 children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 5,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.blue.shade50,
-                                          borderRadius:
-                                              BorderRadius.circular(6),
-                                          border: Border.all(
-                                              color: Colors.blue.shade200),
-                                        ),
-                                        child: Text(
-                                          courseCodes[index],
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13,
-                                            color: Colors.blue.shade700,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 5,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey.shade100,
-                                          borderRadius:
-                                              BorderRadius.circular(6),
-                                          border: Border.all(
-                                              color: Colors.grey.shade300),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.shade200
-                                                  .withOpacity(0.5),
-                                              blurRadius: 2,
-                                              offset: const Offset(0, 1),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Text(
-                                          '${credits[index]} Credits',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.grey.shade700,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                  Expanded(
+                                    child: _buildSimpleInfoItem(
+                                      label: 'Student Name',
+                                      value: 'Maitrek Patel',
+                                    ),
                                   ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    courseNames[index],
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: _buildSimpleInfoItem(
+                                      label: 'Student ID',
+                                      value: '22BCS184',
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                            Container(
-                              width: 44,
-                              height: 44,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    _getGradeColor(grades[index]),
-                                    _getGradeColor(grades[index])
-                                        .withOpacity(0.8),
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: _getGradeColor(grades[index])
-                                        .withOpacity(0.4),
-                                    blurRadius: 6,
-                                    spreadRadius: 1,
-                                    offset: const Offset(0, 3),
+                              const SizedBox(height: 16),
+
+                              // Second row - Program and Semester
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildSimpleInfoItem(
+                                      label: 'Program',
+                                      value: 'CSE',
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: _buildSimpleInfoItem(
+                                      label: 'Current Semester',
+                                      value: semester,
+                                    ),
                                   ),
                                 ],
-                                border: Border.all(
-                                  color: Colors.white.withOpacity(0.7),
-                                  width: 1.5,
-                                ),
                               ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                grades[index],
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  );
-                }),
-
-                const SizedBox(height: 24),
-                // Summary Section
-                Card(
-                  elevation: 3,
-                  shadowColor: Colors.blue.shade200.withOpacity(0.5),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.summarize,
-                                color: Colors.blue.shade700, size: 24),
-                            const SizedBox(width: 12),
-                            Text(
-                              'SEMESTER SUMMARY',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue.shade800,
-                              ),
-                            ),
-                          ],
+                  const SizedBox(height: 24),
+
+                  // Results Section Header
+                  Container(
+                    width: double.infinity,
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.blue.shade600, Colors.blue.shade400],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.blue.shade200.withOpacity(0.6),
+                          blurRadius: 8,
+                          spreadRadius: 2,
+                          offset: const Offset(0, 4),
                         ),
-                        const Divider(height: 24),
-                        // Summary cards in responsive layout
-                        LayoutBuilder(
-                          builder: (context, constraints) {
-                            if (constraints.maxWidth < 500) {
-                              return Column(
-                                children: [
-                                  _buildSimpleSummaryCard(
-                                      'Total Credits', '16', Icons.credit_card),
-                                  const SizedBox(height: 12),
-                                  _buildSimpleSummaryCard(
-                                      'Semester SPI', '3.7', Icons.assessment),
-                                  const SizedBox(height: 12),
-                                  _buildSimpleSummaryCard(
-                                      'CPI', '3.8', Icons.star),
-                                  const SizedBox(height: 12),
-                                  _buildSimpleSummaryCard(
-                                      'SU', '14', Icons.check_circle),
-                                  const SizedBox(height: 12),
-                                  _buildSimpleSummaryCard(
-                                      'TU', '18', Icons.assessment_outlined),
-                                ],
-                              );
-                            } else {
-                              return Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: _buildSimpleSummaryCard(
-                                            'Total Credits',
-                                            '16',
-                                            Icons.credit_card),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: _buildSimpleSummaryCard(
-                                            'Semester SPI',
-                                            '3.7',
-                                            Icons.assessment),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: _buildSimpleSummaryCard(
-                                            'CPI', '3.8', Icons.star),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: _buildSimpleSummaryCard(
-                                            'SU', '14', Icons.check_circle),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: _buildSimpleSummaryCard('TU',
-                                            '18', Icons.assessment_outlined),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(child: Container()),
-                                    ],
-                                  ),
-                                ],
-                              );
-                            }
-                          },
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(Icons.assessment,
+                              color: Colors.blue.shade700, size: 20),
+                        ),
+                        const SizedBox(width: 12),
+                        const Text(
+                          'SEMESTER RESULTS',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 1.0,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ),
+                  const SizedBox(height: 20),
 
-                const SizedBox(height: 16),
-              ],
+                  // Course List
+                  ...List.generate(5, (index) {
+                    final List<String> courseNames = [
+                      'Introduction to Programming',
+                      'Data Structures and Algorithms',
+                      'Linear Algebra',
+                      'Physics for Computing',
+                      'Technical Communication'
+                    ];
+
+                    final List<String> courseCodes = [
+                      'CS101',
+                      'CS201',
+                      'ES202',
+                      'PR101',
+                      'CE203'
+                    ];
+
+                    final List<String> grades = ['A', 'A+', 'B+', 'A', 'B'];
+                    final List<int> credits = [4, 3, 3, 4, 2];
+
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      elevation: 3,
+                      shadowColor: Colors.blue.shade100.withOpacity(0.7),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.white, Colors.grey.shade50],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade200.withOpacity(0.5),
+                              blurRadius: 4,
+                              spreadRadius: 1,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 5,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.blue.shade50,
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                            border: Border.all(
+                                                color: Colors.blue.shade200),
+                                          ),
+                                          child: Text(
+                                            courseCodes[index],
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13,
+                                              color: Colors.blue.shade700,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 5,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade100,
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                            border: Border.all(
+                                                color: Colors.grey.shade300),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.shade200
+                                                    .withOpacity(0.5),
+                                                blurRadius: 2,
+                                                offset: const Offset(0, 1),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Text(
+                                            '${credits[index]} Credits',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey.shade700,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      courseNames[index],
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      _getGradeColor(grades[index]),
+                                      _getGradeColor(grades[index])
+                                          .withOpacity(0.8),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: _getGradeColor(grades[index])
+                                          .withOpacity(0.4),
+                                      blurRadius: 6,
+                                      spreadRadius: 1,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.7),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  grades[index],
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+
+                  const SizedBox(height: 24),
+                  // Summary Section
+                  Card(
+                    elevation: 3,
+                    shadowColor: Colors.blue.shade200.withOpacity(0.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.summarize,
+                                  color: Colors.blue.shade700, size: 24),
+                              const SizedBox(width: 12),
+                              Text(
+                                'SEMESTER SUMMARY',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue.shade800,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Divider(height: 24),
+                          // Summary cards in responsive layout
+                          LayoutBuilder(
+                            builder: (context, constraints) {
+                              if (constraints.maxWidth < 500) {
+                                return Column(
+                                  children: [
+                                    _buildSimpleSummaryCard(
+                                        'Total Credits', '16', Icons.credit_card),
+                                    const SizedBox(height: 12),
+                                    _buildSimpleSummaryCard(
+                                        'Semester SPI', '3.7', Icons.assessment),
+                                    const SizedBox(height: 12),
+                                    _buildSimpleSummaryCard(
+                                        'CPI', '3.8', Icons.star),
+                                    const SizedBox(height: 12),
+                                    _buildSimpleSummaryCard(
+                                        'SU', '14', Icons.check_circle),
+                                    const SizedBox(height: 12),
+                                    _buildSimpleSummaryCard(
+                                        'TU', '18', Icons.assessment_outlined),
+                                  ],
+                                );
+                              } else {
+                                return Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: _buildSimpleSummaryCard(
+                                              'Total Credits',
+                                              '16',
+                                              Icons.credit_card),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: _buildSimpleSummaryCard(
+                                              'Semester SPI',
+                                              '3.7',
+                                              Icons.assessment),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: _buildSimpleSummaryCard(
+                                              'CPI', '3.8', Icons.star),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: _buildSimpleSummaryCard(
+                                              'SU', '14', Icons.check_circle),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: _buildSimpleSummaryCard('TU',
+                                              '18', Icons.assessment_outlined),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(child: Container()),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Courses',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: 0,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ExaminationDashboard(),
-              ),
-            );
-          }
-        },
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              label: 'Courses',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          currentIndex: 0,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: true,
+          onTap: (index) {
+            if (index == 0) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExaminationDashboard(),
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

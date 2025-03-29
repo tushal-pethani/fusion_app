@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'examination_dashboard.dart';
 import 'sidebar.dart';
+import 'gesture_sidebar.dart';
 
 class ValidateGradesScreen extends StatefulWidget {
+  const ValidateGradesScreen({super.key});
+
   @override
   State<ValidateGradesScreen> createState() => _ValidateGradesScreenState();
 }
@@ -16,7 +18,6 @@ class _ValidateGradesScreenState extends State<ValidateGradesScreen> {
   String? _selectedCourse;
   String? _selectedAcademicYear;
   bool _isExcelUploaded = false;
-  String _uploadedFileName = '';
   bool _isLoading = false;
   bool _showResults = false;
   PlatformFile? _selectedFile;
@@ -75,7 +76,6 @@ class _ValidateGradesScreenState extends State<ValidateGradesScreen> {
           _selectedFile = result.files.first;
           _isExcelUploaded = true;
           _fileTextController.text = _selectedFile!.name;
-          _uploadedFileName = _selectedFile!.name;
         });
 
         _showSnackBar('File selected: ${_selectedFile!.name}');
@@ -201,429 +201,432 @@ class _ValidateGradesScreenState extends State<ValidateGradesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text(
-          'Validate Grades',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.blue),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ExaminationDashboard(),
-              ),
-            );
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu, color: Colors.blue),
+    return GestureSidebar(
+      scaffoldKey: _scaffoldKey,
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: const Text(
+            'Validate Grades',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.blue),
             onPressed: () {
-              _scaffoldKey.currentState!.openDrawer();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExaminationDashboard(),
+                ),
+              );
             },
           ),
-        ],
-      ),
-      drawer: Sidebar(
-        onItemSelected: (index) {
-          Navigator.pop(context);
-          if (index == 6) {
-          } else if (index == 0) {
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.menu, color: Colors.blue),
+              onPressed: () {
+                _scaffoldKey.currentState!.openDrawer();
+              },
+            ),
+          ],
+        ),
+        drawer: Sidebar(
+          onItemSelected: (index) {
             Navigator.pop(context);
-          } else {
-            _showSnackBar('Navigating to ${_getScreenName(index)}');
-          }
-        },
-      ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildFormField(
-                    label: 'Course*',
-                    child: DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+            if (index == 6) {
+            } else if (index == 0) {
+              Navigator.pop(context);
+            } else {
+              _showSnackBar('Navigating to ${_getScreenName(index)}');
+            }
+          },
+        ),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildFormField(
+                      label: 'Course*',
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          hintText: 'Select Course',
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        hintText: 'Select Course',
+                        items: const [
+                          DropdownMenuItem(value: 'CS101', child: Text('CS101 - Introduction to Programming')),
+                          DropdownMenuItem(value: 'CS201', child: Text('CS201 - Data Structures')),
+                          DropdownMenuItem(value: 'CS301', child: Text('CS301 - Database Systems')),
+                          DropdownMenuItem(value: 'CS401', child: Text('CS401 - Machine Learning')),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedCourse = value;
+                          });
+                        },
                       ),
-                      items: const [
-                        DropdownMenuItem(value: 'CS101', child: Text('CS101 - Introduction to Programming')),
-                        DropdownMenuItem(value: 'CS201', child: Text('CS201 - Data Structures')),
-                        DropdownMenuItem(value: 'CS301', child: Text('CS301 - Database Systems')),
-                        DropdownMenuItem(value: 'CS401', child: Text('CS401 - Machine Learning')),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedCourse = value;
-                        });
-                      },
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFormField(
-                    label: 'Academic Year*',
-                    child: DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                    const SizedBox(height: 16),
+                    _buildFormField(
+                      label: 'Academic Year*',
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          hintText: 'Select Academic Year',
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        hintText: 'Select Academic Year',
+                        items: const [
+                          DropdownMenuItem(value: '2022-2023', child: Text('2022-2023')),
+                          DropdownMenuItem(value: '2023-2024', child: Text('2023-2024')),
+                          DropdownMenuItem(value: '2024-2025', child: Text('2024-2025')),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedAcademicYear = value;
+                          });
+                        },
                       ),
-                      items: const [
-                        DropdownMenuItem(value: '2022-2023', child: Text('2022-2023')),
-                        DropdownMenuItem(value: '2023-2024', child: Text('2023-2024')),
-                        DropdownMenuItem(value: '2024-2025', child: Text('2024-2025')),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedAcademicYear = value;
-                        });
-                      },
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFileUploadSection(),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _validateGrades,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        backgroundColor: Colors.blue.shade700,
-                        foregroundColor: Colors.white,
-                        elevation: 2,
+                    const SizedBox(height: 16),
+                    _buildFileUploadSection(),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _validateGrades,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          backgroundColor: Colors.blue.shade700,
+                          foregroundColor: Colors.white,
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const Text('Validate Grades'),
+                      ),
+                    ),
+                    if (_showResults) ...[
+                      const SizedBox(height: 30),
+                      // Header Card
+                      Card(
+                        elevation: 3,
+                        margin: const EdgeInsets.only(bottom: 16),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: BorderRadius.circular(10),
+                          side: BorderSide(color: Colors.blue.shade300, width: 1.5),
                         ),
-                      ),
-                      child: const Text('Validate Grades'),
-                    ),
-                  ),
-                  if (_showResults) ...[
-                    const SizedBox(height: 30),
-                    // Header Card
-                    Card(
-                      elevation: 3,
-                      margin: const EdgeInsets.only(bottom: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: BorderSide(color: Colors.blue.shade300, width: 1.5),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue.shade100,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 24),
-                                ),
-                                const SizedBox(width: 12),
-                                const Text(
-                                  'Mismatched Grades',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0, left: 46.0),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: Colors.orange.shade50,
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: Colors.orange.shade300),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.error_outline, color: Colors.orange.shade800, size: 16),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      '${_mismatchedStudents.length} mismatches found',
-                                      style: TextStyle(
-                                        color: Colors.orange.shade800,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.blue.shade50,
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(color: Colors.blue.shade100),
-                              ),
-                              padding: const EdgeInsets.all(12),
-                              child: Row(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
-                                  Icon(Icons.info_outline, color: Colors.blue.shade700, size: 18),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      'The following grades have discrepancies between the database and the uploaded CSV file. Please review them carefully.',
-                                      style: TextStyle(
-                                        color: Colors.blue.shade700,
-                                        fontSize: 13,
-                                      ),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue.shade100,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 24),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text(
+                                    'Mismatched Grades',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    // Data Table Section
-                    Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(Icons.compare_arrows, color: Colors.blue.shade800, size: 20),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Grade Comparison',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey.shade800,
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0, left: 46.0),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.orange.shade50,
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(color: Colors.orange.shade300),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.error_outline, color: Colors.orange.shade800, size: 16),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        '${_mismatchedStudents.length} mismatches found',
+                                        style: TextStyle(
+                                          color: Colors.orange.shade800,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const Spacer(),
-                                OutlinedButton.icon(
-                                  onPressed: () {
-                                    // Function to handle export or download
-                                    _showSnackBar('Exporting results...');
-                                  },
-                                  icon: Icon(Icons.download, size: 16, color: Colors.blue.shade700),
-                                  label: Text(
-                                    'Export',
-                                    style: TextStyle(color: Colors.blue.shade700),
-                                  ),
-                                  style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    side: BorderSide(color: Colors.blue.shade300),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(8),
                               ),
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: DataTable(
-                                  dataTextStyle: const TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 14,
-                                  ),
-                                  headingTextStyle: TextStyle(
-                                    color: Colors.blue.shade800,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                  headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                                  columns: [
-                                    DataColumn(
-                                      label: Container(
-                                        alignment: Alignment.center,
-                                        child: const Text('Student ID')
-                                      )
-                                    ),
-                                    DataColumn(
-                                      label: Container(
-                                        alignment: Alignment.center,
-                                        child: const Text('Batch')
-                                      )
-                                    ),
-                                    DataColumn(
-                                      label: Container(
-                                        alignment: Alignment.center,
-                                        child: const Text('Semester')
-                                      )
-                                    ),
-                                    DataColumn(
-                                      label: Container(
-                                        alignment: Alignment.center,
-                                        child: const Text('Course ID')
-                                      )
-                                    ),
-                                    DataColumn(
-                                      label: Container(
-                                        alignment: Alignment.center,
-                                        child: const Text('Remarks')
-                                      )
-                                    ),
-                                    DataColumn(
-                                      label: Container(
-                                        alignment: Alignment.center,
-                                        child: const Text('Grades in DB')
-                                      )
-                                    ),
-                                    DataColumn(
-                                      label: Container(
-                                        alignment: Alignment.center,
-                                        child: const Text('Grades in CSV')
-                                      )
+                              const SizedBox(height: 12),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blue.shade50,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Colors.blue.shade100),
+                                ),
+                                padding: const EdgeInsets.all(12),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.info_outline, color: Colors.blue.shade700, size: 18),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        'The following grades have discrepancies between the database and the uploaded CSV file. Please review them carefully.',
+                                        style: TextStyle(
+                                          color: Colors.blue.shade700,
+                                          fontSize: 13,
+                                        ),
+                                      ),
                                     ),
                                   ],
-                                  rows: _mismatchedStudents
-                                      .map(
-                                        (data) => DataRow(
-                                          cells: [
-                                            DataCell(
-                                              Center(
-                                                child: Text(data['Student ID'] ?? '')
-                                              )
-                                            ),
-                                            DataCell(
-                                              Center(
-                                                child: Text(data['Batch'] ?? '')
-                                              )
-                                            ),
-                                            DataCell(
-                                              Center(
-                                                child: Text(data['Semester'] ?? '')
-                                              )
-                                            ),
-                                            DataCell(
-                                              Center(
-                                                child: Text(data['Course ID'] ?? '')
-                                              )
-                                            ),
-                                            DataCell(
-                                              Center(
-                                                child: Text(data['Remarks'] ?? '')
-                                              )
-                                            ),
-                                            DataCell(
-                                              Center(
-                                                child: Text(data['Grades in DB'] ?? '')
-                                              )
-                                            ),
-                                            DataCell(
-                                              Center(
-                                                child: Text(data['Grades in CSV'] ?? '')
-                                              )
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                      .toList(),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 30),
+                      // Data Table Section
+                      Card(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(Icons.compare_arrows, color: Colors.blue.shade800, size: 20),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Grade Comparison',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey.shade800,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  OutlinedButton.icon(
+                                    onPressed: () {
+                                      // Function to handle export or download
+                                      _showSnackBar('Exporting results...');
+                                    },
+                                    icon: Icon(Icons.download, size: 16, color: Colors.blue.shade700),
+                                    label: Text(
+                                      'Export',
+                                      style: TextStyle(color: Colors.blue.shade700),
+                                    ),
+                                    style: OutlinedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      side: BorderSide(color: Colors.blue.shade300),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: DataTable(
+                                    dataTextStyle: const TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 14,
+                                    ),
+                                    headingTextStyle: TextStyle(
+                                      color: Colors.blue.shade800,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                    headingRowColor: WidgetStateProperty.all(Colors.grey.shade100),
+                                    columns: [
+                                      DataColumn(
+                                        label: Container(
+                                          alignment: Alignment.center,
+                                          child: const Text('Student ID')
+                                        )
+                                      ),
+                                      DataColumn(
+                                        label: Container(
+                                          alignment: Alignment.center,
+                                          child: const Text('Batch')
+                                        )
+                                      ),
+                                      DataColumn(
+                                        label: Container(
+                                          alignment: Alignment.center,
+                                          child: const Text('Semester')
+                                        )
+                                      ),
+                                      DataColumn(
+                                        label: Container(
+                                          alignment: Alignment.center,
+                                          child: const Text('Course ID')
+                                        )
+                                      ),
+                                      DataColumn(
+                                        label: Container(
+                                          alignment: Alignment.center,
+                                          child: const Text('Remarks')
+                                        )
+                                      ),
+                                      DataColumn(
+                                        label: Container(
+                                          alignment: Alignment.center,
+                                          child: const Text('Grades in DB')
+                                        )
+                                      ),
+                                      DataColumn(
+                                        label: Container(
+                                          alignment: Alignment.center,
+                                          child: const Text('Grades in CSV')
+                                        )
+                                      ),
+                                    ],
+                                    rows: _mismatchedStudents
+                                        .map(
+                                          (data) => DataRow(
+                                            cells: [
+                                              DataCell(
+                                                Center(
+                                                  child: Text(data['Student ID'] ?? '')
+                                                )
+                                              ),
+                                              DataCell(
+                                                Center(
+                                                  child: Text(data['Batch'] ?? '')
+                                                )
+                                              ),
+                                              DataCell(
+                                                Center(
+                                                  child: Text(data['Semester'] ?? '')
+                                                )
+                                              ),
+                                              DataCell(
+                                                Center(
+                                                  child: Text(data['Course ID'] ?? '')
+                                                )
+                                              ),
+                                              DataCell(
+                                                Center(
+                                                  child: Text(data['Remarks'] ?? '')
+                                                )
+                                              ),
+                                              DataCell(
+                                                Center(
+                                                  child: Text(data['Grades in DB'] ?? '')
+                                                )
+                                              ),
+                                              DataCell(
+                                                Center(
+                                                  child: Text(data['Grades in CSV'] ?? '')
+                                                )
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
-          ),
-          if (_isLoading)
-            Container(
-              color: Colors.black.withOpacity(0.3),
-              child: Center(
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const CircularProgressIndicator(),
-                        const SizedBox(height: 20),
-                        Text(
-                          _uploadStatus ?? 'Processing...',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+            if (_isLoading)
+              Container(
+                color: Colors.black.withOpacity(0.3),
+                child: Center(
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const CircularProgressIndicator(),
+                          const SizedBox(height: 20),
+                          Text(
+                            _uploadStatus ?? 'Processing...',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Courses',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: 0,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.pop(context);
-          }
-        },
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              label: 'Courses',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          currentIndex: 0,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: true,
+          onTap: (index) {
+            if (index == 0) {
+              Navigator.pop(context);
+            }
+          },
+        ),
       ),
     );
   }
@@ -703,7 +706,6 @@ class _ValidateGradesScreenState extends State<ValidateGradesScreen> {
                     setState(() {
                       _isExcelUploaded = false;
                       _fileTextController.text = '';
-                      _uploadedFileName = '';
                       _selectedFile = null;
                     });
                   },
@@ -763,89 +765,5 @@ class _ValidateGradesScreenState extends State<ValidateGradesScreen> {
         child,
       ],
     );
-  }
-
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                size: 36,
-                color: color,
-              ),
-            ),
-            const SizedBox(width: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey.shade700,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  IconData _getFileIcon(String fileName) {
-    String extension = path.extension(fileName).toLowerCase();
-
-    if (extension == '.csv') {
-      return Icons.description;
-    } else if (extension == '.xlsx' || extension == '.xls') {
-      return Icons.table_chart;
-    } else {
-      return Icons.insert_drive_file;
-    }
-  }
-
-  String _formatFileSize(int bytes) {
-    if (bytes < 1024) {
-      return '$bytes B';
-    } else if (bytes < 1024 * 1024) {
-      double kb = bytes / 1024;
-      return '${kb.toStringAsFixed(1)} KB';
-    } else {
-      double mb = bytes / (1024 * 1024);
-      return '${mb.toStringAsFixed(1)} MB';
-    }
   }
 }

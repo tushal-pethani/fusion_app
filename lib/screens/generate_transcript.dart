@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:ui'; // Add this import for ImageFilter
 import 'examination_dashboard.dart';
 import 'sidebar.dart';
+import 'gesture_sidebar.dart';
 
 class GenerateTranscriptScreen extends StatefulWidget {
   const GenerateTranscriptScreen({Key? key}) : super(key: key);
@@ -88,7 +89,7 @@ class _GenerateTranscriptScreenState extends State<GenerateTranscriptScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => TranscriptTableScreen(),
+          builder: (context) => const TranscriptTableScreen(),
         ),
       );
     });
@@ -96,226 +97,264 @@ class _GenerateTranscriptScreenState extends State<GenerateTranscriptScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text(
-          'Generate Transcript',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.blue),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ExaminationDashboard(),
-              ),
-            );
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu, color: Colors.blue),
+    return GestureSidebar(
+      scaffoldKey: _scaffoldKey,
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: const Text(
+            'Generate Transcript',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.blue),
             onPressed: () {
-              _scaffoldKey.currentState!.openDrawer();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExaminationDashboard(),
+                ),
+              );
             },
           ),
-        ],
-      ),
-      drawer: Sidebar(
-        onItemSelected: (index) {
-          Navigator.pop(context);
-          if (index == 5) {
-            // Already on Generate Transcript screen
-          } else {
-            _showSnackBar('Navigating to another screen');
-          }
-        },
-      ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildFormField(
-                    label: 'Course*',
-                    child: DropdownButtonFormField<String>(
-                      value: _selectedCourse,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 16),
-                        hintText: 'Select Course',
-                      ),
-                      items: _courseItems,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedCourse = value;
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFormField(
-                    label: 'Academic Year*',
-                    child: DropdownButtonFormField<String>(
-                      value: _selectedYear,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 16),
-                        hintText: 'Select Academic Year',
-                      ),
-                      items: _yearItems,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedYear = value;
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFormField(
-                    label: 'Excel File Upload*',
-                    child: InkWell(
-                      onTap: _pickExcelFile,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade400),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.menu, color: Colors.blue),
+              onPressed: () {
+                _scaffoldKey.currentState!.openDrawer();
+              },
+            ),
+          ],
+        ),
+        drawer: Sidebar(
+          onItemSelected: (index) {
+            Navigator.pop(context);
+            if (index == 5) {
+              // Already on Generate Transcript screen
+            } else {
+              _showSnackBar('Navigating to another screen');
+            }
+          },
+        ),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildFormField(
+                      label: 'Course*',
+                      child: DropdownButtonFormField<String>(
+                        value: _selectedCourse,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 16),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.upload_file,
-                                color: Colors.blue.shade700,
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  _fileName ?? 
-                                      'Choose Excel File (.xlsx, .xls, .csv)',
-                                  style: TextStyle(
-                                    color: _fileName == null
-                                        ? Colors.grey.shade600
-                                        : Colors.black,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              Icon(
-                                Icons.cloud_upload_outlined,
-                                color: Colors.blue.shade700,
-                              ),
-                            ],
-                          ),
+                          hintText: 'Select Course',
                         ),
+                        items: _courseItems,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedCourse = value;
+                          });
+                        },
                       ),
                     ),
-                  ),
-                  if (_fileName != null)
-                    Container(
-                      margin: const EdgeInsets.only(top: 8),
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.green.shade50,
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: Colors.green.shade100),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                            size: 16,
+                    const SizedBox(height: 16),
+                    _buildFormField(
+                      label: 'Academic Year*',
+                      child: DropdownButtonFormField<String>(
+                        value: _selectedYear,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              'File selected: $_fileName',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.green,
-                              ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          hintText: 'Select Academic Year',
+                        ),
+                        items: _yearItems,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedYear = value;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildFormField(
+                      label: 'Excel File Upload*',
+                      child: InkWell(
+                        onTap: _pickExcelFile,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade400),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 16),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.upload_file,
+                                  color: Colors.blue.shade700,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _fileName ?? 
+                                        'Choose Excel File (.xlsx, .xls, .csv)',
+                                    style: TextStyle(
+                                      color: _fileName == null
+                                          ? Colors.grey.shade600
+                                          : Colors.black,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.cloud_upload_outlined,
+                                  color: Colors.blue.shade700,
+                                ),
+                              ],
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                _fileName = null;
-                                _excelFile = null;
-                              });
-                            },
-                            child: const Icon(
-                              Icons.close,
-                              color: Colors.red,
+                        ),
+                      ),
+                    ),
+                    if (_fileName != null)
+                      Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade50,
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(color: Colors.green.shade100),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
                               size: 16,
                             ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'File selected: $_fileName',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _fileName = null;
+                                  _excelFile = null;
+                                });
+                              },
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.red,
+                                size: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _generateTranscript,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          backgroundColor: Colors.blue.shade700,
+                          foregroundColor: Colors.white,
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const Text('Generate Transcript'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (_isLoading)
+              Container(
+                color: Colors.black.withOpacity(0.3),
+                child: Center(
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 20),
+                          Text(
+                            'Generating...',
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                     ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _generateTranscript,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        backgroundColor: Colors.blue.shade700,
-                        foregroundColor: Colors.white,
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: const Text('Generate Transcript'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if (_isLoading)
-            Container(
-              color: Colors.black.withOpacity(0.3),
-              child: Center(
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 20),
-                        Text(
-                          'Generating...',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
                   ),
                 ),
               ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-        ],
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              label: 'Courses',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          currentIndex: 0,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: true,
+          onTap: (index) {
+            if (index == 0) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExaminationDashboard(),
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -343,10 +382,10 @@ class TranscriptTableScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
-      key: _scaffoldKey,
+      key: scaffoldKey,
       appBar: AppBar(
         title: const Text(
           'Generated Transcript',
@@ -365,7 +404,7 @@ class TranscriptTableScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.menu, color: Colors.blue),
             onPressed: () {
-              _scaffoldKey.currentState!.openDrawer();
+              scaffoldKey.currentState!.openDrawer();
             },
           ),
         ],
@@ -395,7 +434,7 @@ class TranscriptTableScreen extends StatelessWidget {
             ),
             child: SingleChildScrollView(
               child: DataTable(
-                headingRowColor: MaterialStateProperty.all(
+                headingRowColor: WidgetStateProperty.all(
                   Colors.grey.shade100,
                 ),
                 columnSpacing: 30,
@@ -451,7 +490,7 @@ class TranscriptTableScreen extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        TranscriptPreviewScreen(),
+                                        const TranscriptPreviewScreen(),
                                   ),
                                 );
                               },

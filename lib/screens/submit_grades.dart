@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'examination_dashboard.dart';
 import 'sidebar.dart';
+import 'gesture_sidebar.dart';
 
 class SubmitGradesScreen extends StatefulWidget {
   const SubmitGradesScreen({super.key});
@@ -242,352 +243,355 @@ class _SubmitGradesScreenState extends State<SubmitGradesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text(
-          'Submit Grades',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.blue),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ExaminationDashboard(),
-              ),
-            );
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu, color: Colors.blue),
+    return GestureSidebar(
+      scaffoldKey: _scaffoldKey,
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: const Text(
+            'Submit Grades',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.blue),
             onPressed: () {
-              _scaffoldKey.currentState!.openDrawer();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExaminationDashboard(),
+                ),
+              );
             },
           ),
-        ],
-      ),
-      drawer: Sidebar(
-        onItemSelected: (index) {
-          Navigator.pop(context);
-          if (index == 3) {
-            // Already on Submit Grades screen
-          } else if (index == 0) {
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.menu, color: Colors.blue),
+              onPressed: () {
+                _scaffoldKey.currentState!.openDrawer();
+              },
+            ),
+          ],
+        ),
+        drawer: Sidebar(
+          onItemSelected: (index) {
             Navigator.pop(context);
-          } else {
-            _showSnackBar('Navigating to ${_getScreenName(index)}');
-          }
-        },
-      ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildFormField(
-                    label: 'Course*',
-                    child: DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+            if (index == 3) {
+              // Already on Submit Grades screen
+            } else if (index == 0) {
+              Navigator.pop(context);
+            } else {
+              _showSnackBar('Navigating to ${_getScreenName(index)}');
+            }
+          },
+        ),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildFormField(
+                      label: 'Course*',
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          hintText: 'Select Course',
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        hintText: 'Select Course',
+                        items: const [
+                          DropdownMenuItem(value: 'CS101', child: Text('CS101 - Introduction to Programming')),
+                          DropdownMenuItem(value: 'CS201', child: Text('CS201 - Data Structures')),
+                          DropdownMenuItem(value: 'CS301', child: Text('CS301 - Database Systems')),
+                          DropdownMenuItem(value: 'CS401', child: Text('CS401 - Machine Learning')),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedCourse = value;
+                          });
+                        },
                       ),
-                      items: const [
-                        DropdownMenuItem(value: 'CS101', child: Text('CS101 - Introduction to Programming')),
-                        DropdownMenuItem(value: 'CS201', child: Text('CS201 - Data Structures')),
-                        DropdownMenuItem(value: 'CS301', child: Text('CS301 - Database Systems')),
-                        DropdownMenuItem(value: 'CS401', child: Text('CS401 - Machine Learning')),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedCourse = value;
-                        });
-                      },
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFormField(
-                    label: 'Academic Year*',
-                    child: DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                    const SizedBox(height: 16),
+                    _buildFormField(
+                      label: 'Academic Year*',
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          hintText: 'Select Academic Year',
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        hintText: 'Select Academic Year',
+                        items: const [
+                          DropdownMenuItem(value: '2022-2023', child: Text('2022-2023')),
+                          DropdownMenuItem(value: '2023-2024', child: Text('2023-2024')),
+                          DropdownMenuItem(value: '2024-2025', child: Text('2024-2025')),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedYear = value;
+                          });
+                        },
                       ),
-                      items: const [
-                        DropdownMenuItem(value: '2022-2023', child: Text('2022-2023')),
-                        DropdownMenuItem(value: '2023-2024', child: Text('2023-2024')),
-                        DropdownMenuItem(value: '2024-2025', child: Text('2024-2025')),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedYear = value;
-                        });
-                      },
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFormField(
-                    label: 'Semester*',
-                    child: DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                    const SizedBox(height: 16),
+                    _buildFormField(
+                      label: 'Semester*',
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          hintText: 'Select Semester',
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                        hintText: 'Select Semester',
+                        items: const [
+                          DropdownMenuItem(value: 'Fall', child: Text('Fall')),
+                          DropdownMenuItem(value: 'Spring', child: Text('Spring')),
+                          DropdownMenuItem(value: 'Summer', child: Text('Summer')),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedSemester = value;
+                          });
+                        },
                       ),
-                      items: const [
-                        DropdownMenuItem(value: 'Fall', child: Text('Fall')),
-                        DropdownMenuItem(value: 'Spring', child: Text('Spring')),
-                        DropdownMenuItem(value: 'Summer', child: Text('Summer')),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedSemester = value;
-                        });
-                      },
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFormField(
-                    label: 'Upload Excel Sheet*',
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        InkWell(
-                          onTap: _selectFile,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.shade400),
-                              borderRadius: BorderRadius.circular(8.0),
+                    const SizedBox(height: 16),
+                    _buildFormField(
+                      label: 'Upload Excel Sheet*',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          InkWell(
+                            onTap: _selectFile,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade400),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                                      child: Text(
+                                        _fileTextController.text.isEmpty
+                                            ? 'No file chosen'
+                                            : _fileTextController.text,
+                                        style: TextStyle(
+                                          color: _fileTextController.text.isEmpty
+                                              ? Colors.grey.shade600
+                                              : Colors.black,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue.shade50,
+                                      borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(7.0),
+                                        bottomRight: Radius.circular(7.0),
+                                      ),
+                                    ),
+                                    child: TextButton(
+                                      onPressed: _selectFile,
+                                      style: TextButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                                      ),
+                                      child: Text(
+                                        'Browse',
+                                        style: TextStyle(color: Colors.blue.shade700),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
+                          ),
+                          const SizedBox(height: 4),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
                             child: Row(
                               children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                                    child: Text(
-                                      _fileTextController.text.isEmpty
-                                          ? 'No file chosen'
-                                          : _fileTextController.text,
-                                      style: TextStyle(
-                                        color: _fileTextController.text.isEmpty
-                                            ? Colors.grey.shade600
-                                            : Colors.black,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue.shade50,
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(7.0),
-                                      bottomRight: Radius.circular(7.0),
-                                    ),
-                                  ),
-                                  child: TextButton(
-                                    onPressed: _selectFile,
-                                    style: TextButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                                    ),
-                                    child: Text(
-                                      'Browse',
-                                      style: TextStyle(color: Colors.blue.shade700),
-                                    ),
+                                Icon(Icons.info_outline, size: 12, color: Colors.grey.shade600),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Accepts .xlsx, .xls or .csv files only',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey.shade600,
+                                    fontStyle: FontStyle.italic,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
+                        ],
+                      ),
+                    ),
+                    if (_isFileSelected && _selectedFile != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey.shade300),
+                          ),
                           child: Row(
                             children: [
-                              Icon(Icons.info_outline, size: 12, color: Colors.grey.shade600),
-                              const SizedBox(width: 4),
-                              Text(
-                                'Accepts .xlsx, .xls or .csv files only',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey.shade600,
-                                  fontStyle: FontStyle.italic,
+                              Icon(
+                                _getFileIcon(_selectedFile!.name),
+                                color: _selectedFile!.name.endsWith('.csv')
+                                    ? Colors.blue
+                                    : Colors.green,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _selectedFile!.name,
+                                      style: const TextStyle(fontWeight: FontWeight.w500),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                    Text(
+                                      _formatFileSize(_selectedFile!.size),
+                                      style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
+                                    ),
+                                  ],
                                 ),
+                              ),
+                              IconButton(
+                                constraints: const BoxConstraints(),
+                                padding: EdgeInsets.zero,
+                                icon: const Icon(Icons.close, color: Colors.red, size: 20),
+                                onPressed: () {
+                                  setState(() {
+                                    _isFileSelected = false;
+                                    _fileTextController.text = '';
+                                    _selectedFile = null;
+                                  });
+                                },
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  if (_isFileSelected && _selectedFile != null)
+                      ),
+                    const SizedBox(height: 24),
                     Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              _getFileIcon(_selectedFile!.name),
-                              color: _selectedFile!.name.endsWith('.csv')
-                                  ? Colors.blue
-                                  : Colors.green,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _selectedFile!.name,
-                                    style: const TextStyle(fontWeight: FontWeight.w500),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                  Text(
-                                    _formatFileSize(_selectedFile!.size),
-                                    style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
-                                  ),
-                                ],
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: _downloadTemplate,
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                side: BorderSide(color: Colors.blue.shade700, width: 1.5),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
                               ),
+                              child: const Text('Download Template'),
                             ),
-                            IconButton(
-                              constraints: const BoxConstraints(),
-                              padding: EdgeInsets.zero,
-                              icon: const Icon(Icons.close, color: Colors.red, size: 20),
-                              onPressed: () {
-                                setState(() {
-                                  _isFileSelected = false;
-                                  _fileTextController.text = '';
-                                  _selectedFile = null;
-                                });
-                              },
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: _submitGrades,
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                backgroundColor: Colors.blue.shade700,
+                                foregroundColor: Colors.white,
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                              child: const Text('Submit Grades'),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  const SizedBox(height: 24),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: _downloadTemplate,
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              side: BorderSide(color: Colors.blue.shade700, width: 1.5),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                            child: const Text('Download Template'),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: _submitGrades,
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              backgroundColor: Colors.blue.shade700,
-                              foregroundColor: Colors.white,
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                            child: const Text('Submit Grades'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          if (_isLoading)
-            Container(
-              color: Colors.black.withOpacity(0.3),
-              child: Center(
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const CircularProgressIndicator(),
-                        const SizedBox(height: 20),
-                        Text(
-                          _uploadStatus ?? 'Processing...',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+            if (_isLoading)
+              Container(
+                color: Colors.black.withOpacity(0.3),
+                child: Center(
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const CircularProgressIndicator(),
+                          const SizedBox(height: 20),
+                          Text(
+                            _uploadStatus ?? 'Processing...',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Courses',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: 0,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.pop(context);
-          }
-        },
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              label: 'Courses',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          currentIndex: 0,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: true,
+          onTap: (index) {
+            if (index == 0) {
+              Navigator.pop(context);
+            }
+          },
+        ),
       ),
     );
   }

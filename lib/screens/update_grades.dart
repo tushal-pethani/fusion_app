@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'examination_dashboard.dart';
 import 'sidebar.dart';
+import 'gesture_sidebar.dart';
 
 class UpdateGradesScreen extends StatefulWidget {
   const UpdateGradesScreen({Key? key}) : super(key: key);
@@ -451,498 +452,501 @@ class _UpdateGradesScreenState extends State<UpdateGradesScreen> {
     final Size screenSize = MediaQuery.of(context).size;
     final bool isSmallScreen = screenSize.width < 600;
 
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text(
-          'Update Grades',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.blue),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ExaminationDashboard(),
-              ),
-            );
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu, color: Colors.blue),
+    return GestureSidebar(
+      scaffoldKey: _scaffoldKey,
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          title: const Text(
+            'Update Grades',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.blue),
             onPressed: () {
-              _scaffoldKey.currentState!.openDrawer();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExaminationDashboard(),
+                ),
+              );
             },
           ),
-        ],
-      ),
-      drawer: Sidebar(
-        onItemSelected: (index) {
-          Navigator.pop(context);
-          if (index == 7) {
-            // Already on Update Grades screen
-          } else if (index == 0) {
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.menu, color: Colors.blue),
+              onPressed: () {
+                _scaffoldKey.currentState!.openDrawer();
+              },
+            ),
+          ],
+        ),
+        drawer: Sidebar(
+          onItemSelected: (index) {
             Navigator.pop(context);
-          } else {
-            _showSnackBar('Navigating to ${_getScreenName(index)}');
-          }
-        },
-      ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildFormField(
-                    label: 'Course*',
-                    child: DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 16),
-                        hintText: 'Select Course',
-                      ),
-                      items: const [
-                        DropdownMenuItem(
-                            value: 'CS101',
-                            child: Text('CS101 - Introduction to Programming')),
-                        DropdownMenuItem(
-                            value: 'CS201',
-                            child: Text('CS201 - Data Structures')),
-                        DropdownMenuItem(
-                            value: 'CS301',
-                            child: Text('CS301 - Database Systems')),
-                        DropdownMenuItem(
-                            value: 'CS401',
-                            child: Text('CS401 - Machine Learning')),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedCourse = value;
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFormField(
-                    label: 'Academic Year*',
-                    child: DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 16),
-                        hintText: 'Select Academic Year',
-                      ),
-                      items: const [
-                        DropdownMenuItem(
-                            value: '2022-2023', child: Text('2022-2023')),
-                        DropdownMenuItem(
-                            value: '2023-2024', child: Text('2023-2024')),
-                        DropdownMenuItem(
-                            value: '2024-2025', child: Text('2024-2025')),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedYear = value;
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFormField(
-                    label: 'Semester*',
-                    child: DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 16),
-                        hintText: 'Select Semester',
-                      ),
-                      items: const [
-                        DropdownMenuItem(value: '1', child: Text('Semester 1')),
-                        DropdownMenuItem(value: '2', child: Text('Semester 2')),
-                        DropdownMenuItem(value: '3', child: Text('Semester 3')),
-                        DropdownMenuItem(value: '4', child: Text('Semester 4')),
-                        DropdownMenuItem(value: '5', child: Text('Semester 5')),
-                        DropdownMenuItem(value: '6', child: Text('Semester 6')),
-                        DropdownMenuItem(value: '7', child: Text('Semester 7')),
-                        DropdownMenuItem(value: '8', child: Text('Semester 8')),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedSemester = value;
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _searchGrades,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        backgroundColor: Colors.blue.shade700,
-                        foregroundColor: Colors.white,
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: const Text('Search Grades'),
-                    ),
-                  ),
-                  if (_showResults) ...[
-                    const SizedBox(height: 30),
-                    Row(
-                      children: [
-                        const Text(
-                          'Grade Results',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+            if (index == 7) {
+              // Already on Update Grades screen
+            } else if (index == 0) {
+              Navigator.pop(context);
+            } else {
+              _showSnackBar('Navigating to ${_getScreenName(index)}');
+            }
+          },
+        ),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildFormField(
+                      label: 'Course*',
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          hintText: 'Select Course',
                         ),
-                        const Spacer(),
-                        OutlinedButton.icon(
-                          onPressed: () {
-                            _showSnackBar('Exporting results to Excel');
-                          },
-                          icon: const Icon(Icons.download),
-                          label: const Text('Export'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.blue.shade700,
-                          ),
-                        ),
-                      ],
+                        items: const [
+                          DropdownMenuItem(
+                              value: 'CS101',
+                              child: Text('CS101 - Introduction to Programming')),
+                          DropdownMenuItem(
+                              value: 'CS201',
+                              child: Text('CS201 - Data Structures')),
+                          DropdownMenuItem(
+                              value: 'CS301',
+                              child: Text('CS301 - Database Systems')),
+                          DropdownMenuItem(
+                              value: 'CS401',
+                              child: Text('CS401 - Machine Learning')),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedCourse = value;
+                          });
+                        },
+                      ),
                     ),
                     const SizedBox(height: 16),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(8),
+                    _buildFormField(
+                      label: 'Academic Year*',
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          hintText: 'Select Academic Year',
+                        ),
+                        items: const [
+                          DropdownMenuItem(
+                              value: '2022-2023', child: Text('2022-2023')),
+                          DropdownMenuItem(
+                              value: '2023-2024', child: Text('2023-2024')),
+                          DropdownMenuItem(
+                              value: '2024-2025', child: Text('2024-2025')),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedYear = value;
+                          });
+                        },
                       ),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: DataTable(
-                          headingRowColor:
-                              MaterialStateProperty.all(Colors.grey.shade100),
-                          columnSpacing: 16,
-                          horizontalMargin: 12,
-                          dataRowMinHeight: 40, // Set minimum row height
-                          dataRowMaxHeight: 55, // Set maximum row height
-                          headingTextStyle: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildFormField(
+                      label: 'Semester*',
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                          dataTextStyle: const TextStyle(
-                            fontSize: 13,
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          hintText: 'Select Semester',
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: '1', child: Text('Semester 1')),
+                          DropdownMenuItem(value: '2', child: Text('Semester 2')),
+                          DropdownMenuItem(value: '3', child: Text('Semester 3')),
+                          DropdownMenuItem(value: '4', child: Text('Semester 4')),
+                          DropdownMenuItem(value: '5', child: Text('Semester 5')),
+                          DropdownMenuItem(value: '6', child: Text('Semester 6')),
+                          DropdownMenuItem(value: '7', child: Text('Semester 7')),
+                          DropdownMenuItem(value: '8', child: Text('Semester 8')),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedSemester = value;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _searchGrades,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          backgroundColor: Colors.blue.shade700,
+                          foregroundColor: Colors.white,
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                          columns: const [
-                            DataColumn(
-                                label: Text('Student ID',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Batch',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Sem',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Course',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Remarks',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('Grade',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
-                          ],
-                          rows: _dummyData
-                              .map(
-                                (data) => DataRow(
-                                  cells: [
-                                    DataCell(Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                                      child: Text(data['Student ID'] ?? ''),
-                                    )),
-                                    DataCell(Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                                      child: Text(data['Batch'] ?? ''),
-                                    )),
-                                    DataCell(Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                                      child: Text(data['Semester'] ?? ''),
-                                    )),
-                                    DataCell(Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                                      child: Text(data['Course ID'] ?? ''),
-                                    )),
-                                    DataCell(Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                                      child: Text(data['Remarks'] ?? ''),
-                                    )),
-                                    DataCell(
-                                      Padding(
+                        ),
+                        child: const Text('Search Grades'),
+                      ),
+                    ),
+                    if (_showResults) ...[
+                      const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          const Text(
+                            'Grade Results',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Spacer(),
+                          OutlinedButton.icon(
+                            onPressed: () {
+                              _showSnackBar('Exporting results to Excel');
+                            },
+                            icon: const Icon(Icons.download),
+                            label: const Text('Export'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.blue.shade700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(
+                            headingRowColor:
+                                WidgetStateProperty.all(Colors.grey.shade100),
+                            columnSpacing: 16,
+                            horizontalMargin: 12,
+                            dataRowMinHeight: 40, // Set minimum row height
+                            dataRowMaxHeight: 55, // Set maximum row height
+                            headingTextStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                            dataTextStyle: const TextStyle(
+                              fontSize: 13,
+                            ),
+                            columns: const [
+                              DataColumn(
+                                  label: Text('Student ID',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold))),
+                              DataColumn(
+                                  label: Text('Batch',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold))),
+                              DataColumn(
+                                  label: Text('Sem',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold))),
+                              DataColumn(
+                                  label: Text('Course',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold))),
+                              DataColumn(
+                                  label: Text('Remarks',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold))),
+                              DataColumn(
+                                  label: Text('Grade',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold))),
+                            ],
+                            rows: _dummyData
+                                .map(
+                                  (data) => DataRow(
+                                    cells: [
+                                      DataCell(Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 2.0),
-                                        child: Container(
-                                          width: 50,
-                                          child: _buildGradeTag(data['Grades'] ?? ''),
+                                        child: Text(data['Student ID'] ?? ''),
+                                      )),
+                                      DataCell(Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                        child: Text(data['Batch'] ?? ''),
+                                      )),
+                                      DataCell(Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                        child: Text(data['Semester'] ?? ''),
+                                      )),
+                                      DataCell(Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                        child: Text(data['Course ID'] ?? ''),
+                                      )),
+                                      DataCell(Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                        child: Text(data['Remarks'] ?? ''),
+                                      )),
+                                      DataCell(
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                          child: SizedBox(
+                                            width: 50,
+                                            child: _buildGradeTag(data['Grades'] ?? ''),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                              .toList(),
+                                    ],
+                                  ),
+                                )
+                                .toList(),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 30),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade200,
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              children: [
-                                Icon(Icons.pie_chart,
-                                    color: Colors.blue.shade700),
-                                const SizedBox(width: 8),
-                                const Text(
-                                  'Grade Distribution',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                      const SizedBox(height: 30),
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade200,
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
                             ),
-                          ),
-                          const Divider(height: 1),
-                          LayoutBuilder(
-                            builder: (context, constraints) {
-                              return isSmallScreen
-                                  ? _buildVerticalChartLayout()
-                                  : _buildHorizontalChartLayout();
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 500),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [Colors.blue.shade50, Colors.white],
+                          ],
                         ),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade200,
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              children: [
-                                Icon(Icons.analytics,
-                                    color: Colors.blue.shade700),
-                                const SizedBox(width: 8),
-                                const Text(
-                                  'Grade Statistics',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.pie_chart,
+                                      color: Colors.blue.shade700),
+                                  const SizedBox(width: 8),
+                                  const Text(
+                                    'Grade Distribution',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          const Divider(height: 1),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: _buildEnhancedStatCard(
-                                          'Batch Average',
-                                          _calculateAverageGrade(),
-                                          Icons.grade,
-                                          Colors.indigo.shade600),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: _buildEnhancedStatCard(
-                                          'Passing Rate',
-                                          '83%',
-                                          Icons.check_circle,
-                                          Colors.green.shade600),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: _buildEnhancedStatCard(
-                                          'Total Students',
-                                          '${_dummyData.length}',
-                                          Icons.people,
-                                          Colors.blue.shade700),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: _buildEnhancedStatCard(
-                                          'Total Failed',
-                                          '${_calculateFailedStudents()}',
-                                          Icons.warning,
-                                          Colors.red.shade600),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 24),
-                                ElevatedButton.icon(
-                                  onPressed: () {
-                                    _showSnackBar('All grades verified successfully');
-                                  },
-                                  icon: const Icon(Icons.check_circle),
-                                  label: const Text('Verify'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blue.shade700,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                    minimumSize: const Size(double.infinity, 45),
-                                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                ElevatedButton.icon(
-                                  onPressed: () {
-                                    _showSnackBar('Re-submission allowed for selected grades');
-                                  },
-                                  icon: const Icon(Icons.refresh),
-                                  label: const Text('Allow Re-Submission'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blue.shade700,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                    minimumSize: const Size(double.infinity, 45),
-                                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
+                            const Divider(height: 1),
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                return isSmallScreen
+                                    ? _buildVerticalChartLayout()
+                                    : _buildHorizontalChartLayout();
+                              },
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 30),
+                      const SizedBox(height: 30),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 500),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Colors.blue.shade50, Colors.white],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade200,
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.analytics,
+                                      color: Colors.blue.shade700),
+                                  const SizedBox(width: 8),
+                                  const Text(
+                                    'Grade Statistics',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Divider(height: 1),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: _buildEnhancedStatCard(
+                                            'Batch Average',
+                                            _calculateAverageGrade(),
+                                            Icons.grade,
+                                            Colors.indigo.shade600),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: _buildEnhancedStatCard(
+                                            'Passing Rate',
+                                            '83%',
+                                            Icons.check_circle,
+                                            Colors.green.shade600),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: _buildEnhancedStatCard(
+                                            'Total Students',
+                                            '${_dummyData.length}',
+                                            Icons.people,
+                                            Colors.blue.shade700),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: _buildEnhancedStatCard(
+                                            'Total Failed',
+                                            '${_calculateFailedStudents()}',
+                                            Icons.warning,
+                                            Colors.red.shade600),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 24),
+                                  ElevatedButton.icon(
+                                    onPressed: () {
+                                      _showSnackBar('All grades verified successfully');
+                                    },
+                                    icon: const Icon(Icons.check_circle),
+                                    label: const Text('Verify'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue.shade700,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                      minimumSize: const Size(double.infinity, 45),
+                                      textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  ElevatedButton.icon(
+                                    onPressed: () {
+                                      _showSnackBar('Re-submission allowed for selected grades');
+                                    },
+                                    icon: const Icon(Icons.refresh),
+                                    label: const Text('Allow Re-Submission'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue.shade700,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                      minimumSize: const Size(double.infinity, 45),
+                                      textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
-          ),
-          if (_isLoading)
-            Container(
-              color: Colors.black.withOpacity(0.3),
-              child: Center(
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 20),
-                        Text(
-                          'Searching...',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
+            if (_isLoading)
+              Container(
+                color: Colors.black.withOpacity(0.3),
+                child: Center(
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 20),
+                          Text(
+                            'Searching...',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Courses',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: 0,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.pop(context);
-          }
-        },
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              label: 'Courses',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          currentIndex: 0,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: true,
+          onTap: (index) {
+            if (index == 0) {
+              Navigator.pop(context);
+            }
+          },
+        ),
       ),
     );
   }
