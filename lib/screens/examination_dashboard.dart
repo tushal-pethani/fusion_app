@@ -8,6 +8,11 @@ import 'generate_transcript.dart';
 import 'result.dart'; // Import the ResultScreen
 import 'validate_grades.dart'; // Import the ValidateGradesScreen
 import 'gesture_sidebar.dart';
+import 'profile.dart'; // Import the new ProfileScreen
+import 'search_screen.dart'; // Import the new SearchScreen
+import 'home.dart'; // Import HomeScreen for navigation
+import 'bottom_bar.dart';
+import '../main.dart'; // Import ExitConfirmationWrapper
 
 class ExaminationDashboard extends StatefulWidget {
   const ExaminationDashboard({super.key});
@@ -49,7 +54,7 @@ class _ExaminationDashboardState extends State<ExaminationDashboard> {
     } else if (index == 6) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ValidateGradesScreen()),
+        MaterialPageRoute(builder: (context) => const ValidateGradesScreen()),
       );
     } else if (index == 7) {
       // Handle Update Grades navigation
@@ -61,6 +66,12 @@ class _ExaminationDashboardState extends State<ExaminationDashboard> {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const ResultScreen()),
+      );
+    } else if (index == 9) {
+      // Navigate to Profile screen when selected from sidebar
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfileScreen()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -107,133 +118,127 @@ class _ExaminationDashboardState extends State<ExaminationDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureSidebar(
-      scaffoldKey: _scaffoldKey,
-      child: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: const Text(
-            'Examination',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+    return WillPopScope(
+      onWillPop: () async {
+        // When back button is pressed, navigate to home with exit confirmation
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                const ExitConfirmationWrapper(child: HomeScreen()),
           ),
-          elevation: 0,
-          backgroundColor: Colors.blue.shade700,
-          leading: IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white),
-            onPressed: () {
-              _scaffoldKey.currentState!.openDrawer();
-            },
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.notifications, color: Colors.white),
-              onPressed: () {},
+          (route) => false,
+        );
+        return false; // Prevent default back behavior
+      },
+      child: GestureSidebar(
+        scaffoldKey: _scaffoldKey,
+        child: Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBar(
+            title: const Text(
+              'Examination',
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ),
-          ],
-        ),
-        drawer: sidebar.Sidebar(onItemSelected: _handleNavigation),
-        body: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.blue.shade700,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(80),
-                  bottomRight: Radius.circular(80),
+            elevation: 0,
+            backgroundColor: Colors.blue.shade700,
+            leading: IconButton(
+              icon: const Icon(Icons.menu, color: Colors.white),
+              onPressed: () {
+                _scaffoldKey.currentState!.openDrawer();
+              },
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.notifications, color: Colors.white),
+                onPressed: () {
+                  // Navigate to home screen when notification bell is clicked
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const ExitConfirmationWrapper(child: HomeScreen()),
+                    ),
+                    (route) => false,
+                  );
+                },
+              ),
+            ],
+          ),
+          drawer: sidebar.Sidebar(onItemSelected: _handleNavigation),
+          body: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade700,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(80),
+                    bottomRight: Radius.circular(80),
+                  ),
+                ),
+                padding: const EdgeInsets.only(
+                    left: 20.0, right: 20.0, bottom: 6.0, top: 10.0),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListView(
+                    children: [
+                      _buildDashboardCard(
+                        icon: Icons.campaign,
+                        label: 'Announcement',
+                        color: Colors.orange,
+                        onTap: () => _handleNavigation(2),
+                      ),
+                      const SizedBox(height: 16.0),
+                      _buildDashboardCard(
+                        icon: Icons.grade,
+                        label: 'Submit Grades',
+                        color: Colors.green,
+                        onTap: () => _handleNavigation(3),
+                      ),
+                      const SizedBox(height: 16.0),
+                      _buildDashboardCard(
+                        icon: Icons.check_circle,
+                        label: 'Verify Grades',
+                        color: Colors.purple,
+                        onTap: () => _handleNavigation(4),
+                      ),
+                      const SizedBox(height: 16.0),
+                      _buildDashboardCard(
+                        icon: Icons.calendar_today,
+                        label: 'Generate Transcript',
+                        color: Colors.blue,
+                        onTap: () => _handleNavigation(5),
+                      ),
+                      const SizedBox(height: 16.0),
+                      _buildDashboardCard(
+                        icon: Icons.verified_user,
+                        label: 'Validate Grades',
+                        color: Colors.red,
+                        onTap: () => _handleNavigation(6),
+                      ),
+                      const SizedBox(height: 16.0),
+                      _buildDashboardCard(
+                        icon: Icons.update,
+                        label: 'Update Grades',
+                        color: Colors.teal,
+                        onTap: () => _handleNavigation(7),
+                      ),
+                      const SizedBox(height: 16.0),
+                      _buildDashboardCard(
+                        icon: Icons.assessment,
+                        label: 'Result',
+                        color: Colors.indigo,
+                        onTap: () => _handleNavigation(8),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              padding: const EdgeInsets.only(
-                  left: 20.0, right: 20.0, bottom: 6.0, top: 10.0),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ListView(
-                  children: [
-                    _buildDashboardCard(
-                      icon: Icons.campaign,
-                      label: 'Announcement',
-                      color: Colors.orange,
-                      onTap: () => _handleNavigation(2),
-                    ),
-                    const SizedBox(height: 16.0),
-                    _buildDashboardCard(
-                      icon: Icons.grade,
-                      label: 'Submit Grades',
-                      color: Colors.green,
-                      onTap: () => _handleNavigation(3),
-                    ),
-                    const SizedBox(height: 16.0),
-                    _buildDashboardCard(
-                      icon: Icons.check_circle,
-                      label: 'Verify Grades',
-                      color: Colors.purple,
-                      onTap: () => _handleNavigation(4),
-                    ),
-                    const SizedBox(height: 16.0),
-                    _buildDashboardCard(
-                      icon: Icons.calendar_today,
-                      label: 'Generate Transcript',
-                      color: Colors.blue,
-                      onTap: () => _handleNavigation(5),
-                    ),
-                    const SizedBox(height: 16.0),
-                    _buildDashboardCard(
-                      icon: Icons.verified_user,
-                      label: 'Validate Grades',
-                      color: Colors.red,
-                      onTap: () => _handleNavigation(6),
-                    ),
-                    const SizedBox(height: 16.0),
-                    _buildDashboardCard(
-                      icon: Icons.update,
-                      label: 'Update Grades',
-                      color: Colors.teal,
-                      onTap: () => _handleNavigation(7),
-                    ),
-                    const SizedBox(height: 16.0),
-                    _buildDashboardCard(
-                      icon: Icons.assessment,
-                      label: 'Result',
-                      color: Colors.indigo,
-                      onTap: () => _handleNavigation(8),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              label: 'Courses',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-          currentIndex: _selectedIndex < 4 ? _selectedIndex : 0,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: true,
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
+            ],
+          ),
         ),
       ),
     );
@@ -242,9 +247,12 @@ class _ExaminationDashboardState extends State<ExaminationDashboard> {
   Widget _buildDashboardCard({
     required IconData icon,
     required String label,
-    required Color color,
+    required Color color, // This parameter will no longer be used for color
     required VoidCallback onTap,
   }) {
+    // Using the specific blue shade for all cards and icons
+    Color cardColor = Colors.blue.shade700;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -255,13 +263,13 @@ class _ExaminationDashboardState extends State<ExaminationDashboard> {
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
             colors: [
-              color,
-              color.withOpacity(0.7),
+              cardColor,
+              cardColor.withOpacity(0.7),
             ],
           ),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.4),
+              color: cardColor.withOpacity(0.4),
               blurRadius: 12,
               offset: const Offset(0, 6),
               spreadRadius: 2,
@@ -293,7 +301,7 @@ class _ExaminationDashboardState extends State<ExaminationDashboard> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: color.withOpacity(0.2),
+                          color: cardColor.withOpacity(0.2), // Changed to use cardColor instead of color
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
@@ -302,7 +310,7 @@ class _ExaminationDashboardState extends State<ExaminationDashboard> {
                     child: Icon(
                       icon,
                       size: 30.0,
-                      color: color,
+                      color: cardColor, // Changed to use cardColor instead of color
                     ),
                   ),
                   const SizedBox(width: 20.0),

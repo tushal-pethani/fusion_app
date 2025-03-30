@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'examination_dashboard.dart';
 import 'sidebar.dart';
 import 'gesture_sidebar.dart';
+import 'bottom_bar.dart'; // Import the new bottom bar component
 
 class ValidateGradesScreen extends StatefulWidget {
   const ValidateGradesScreen({super.key});
@@ -201,6 +202,9 @@ class _ValidateGradesScreenState extends State<ValidateGradesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
+    final bool isSmallScreen = screenSize.width < 600;
+
     return GestureSidebar(
       scaffoldKey: _scaffoldKey,
       child: Scaffold(
@@ -597,36 +601,8 @@ class _ValidateGradesScreenState extends State<ValidateGradesScreen> {
               ),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              label: 'Courses',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-          currentIndex: 0,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: true,
-          onTap: (index) {
-            if (index == 0) {
-              Navigator.pop(context);
-            }
-          },
-        ),
+        // Replace with new BottomBar component
+        bottomNavigationBar: const BottomBar(currentIndex: 0),
       ),
     );
   }

@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import '../services/user_preferences_service.dart';
+import 'examination_dashboard.dart';
+import 'submit_grades.dart';
+import 'update_grades.dart';
+import 'result.dart';
+import 'home.dart'; // Import home screen
 
 class Sidebar extends StatefulWidget {
   final Function(int)? onItemSelected;
@@ -47,8 +53,8 @@ class _SidebarState extends State<Sidebar> {
     'Faculty Member': Colors.blue,
     'Dean': Colors.purple,
     'HOD': Colors.teal,
-    'Student': Colors.orange,
-    'Admin': Colors.red,
+    'Student': Color(0xFF0D47A1), // Dark blue color
+    'Admin': Colors.deepPurple,
   };
 
   // Updated map for user images - using only local assets
@@ -59,6 +65,53 @@ class _SidebarState extends State<Sidebar> {
     'Student': 'assets/profile.jpg',
     'Admin': 'assets/profile.jpg',
   };
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedPosition();
+  }
+
+  Future<void> _loadSavedPosition() async {
+    try {
+      final savedPosition = await UserPreferencesService.getPosition();
+      setState(() {
+        _currentPosition = savedPosition;
+      });
+    } catch (e) {
+      // Handle any errors during loading (fallback to default position)
+      print('Error loading position: $e');
+    }
+  }
+
+  Future<void> _savePosition(String position) async {
+    try {
+      // Update local state
+      setState(() {
+        _currentPosition = position;
+        _showPositionOptions = false;
+      });
+
+      // Save to preferences for persistence across app
+      await UserPreferencesService.savePosition(position);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Position changed to $position'),
+          duration: const Duration(seconds: 2),
+          backgroundColor: _positionColors[position],
+        ),
+      );
+    } catch (e) {
+      print('Error saving position: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to save position'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -276,17 +329,7 @@ class _SidebarState extends State<Sidebar> {
                     final isSelected = position == _currentPosition;
                     return GestureDetector(
                       onTap: () {
-                        setState(() {
-                          _currentPosition = position;
-                          _showPositionOptions = false;
-                        });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Position changed to $position'),
-                            duration: const Duration(seconds: 2),
-                            backgroundColor: _positionColors[position],
-                          ),
-                        );
+                        _savePosition(position);
                       },
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 8),
@@ -404,6 +447,16 @@ class _SidebarState extends State<Sidebar> {
                     setState(() {
                       _isExaminationExpanded = !_isExaminationExpanded;
                     });
+                  },
+                  onTap: () {
+                    // Navigate to Examination Dashboard when clicking on the module directly
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ExaminationDashboard(),
+                      ),
+                    );
                   },
                 ),
                 if (_isExaminationExpanded) ...[
@@ -826,6 +879,7 @@ class _SidebarState extends State<Sidebar> {
     required String title,
     required bool isExpanded,
     required VoidCallback onToggle,
+    VoidCallback? onTap,
   }) {
     return ListTile(
       leading: Icon(icon, color: Colors.blue.shade800),
@@ -840,7 +894,7 @@ class _SidebarState extends State<Sidebar> {
         ),
         onPressed: onToggle,
       ),
-      onTap: onToggle,
+      onTap: onTap ?? onToggle,
     );
   }
 
@@ -861,8 +915,17 @@ class _SidebarState extends State<Sidebar> {
       onTap: () {
         // Close the drawer
         Navigator.pop(context);
-        // Notify parent about selection
-        if (widget.onItemSelected != null) {
+
+        // Handle navigation based on index
+        if (index == 0) {
+          // Navigate to Home screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomeScreen(),
+            ),
+          );
+        } else if (widget.onItemSelected != null) {
           widget.onItemSelected!(index);
         }
       },
@@ -907,54 +970,6 @@ class _SidebarState extends State<Sidebar> {
           widget.onItemSelected!(index);
         }
       },
-    );
-  }
-}
-
-class SubmitGradesScreen extends StatelessWidget {
-  const SubmitGradesScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Submit Grades'),
-      ),
-      body: const Center(
-        child: Text('Submit Grades Screen'),
-      ),
-    );
-  }
-}
-
-class ResultScreen extends StatelessWidget {
-  const ResultScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('View Results'),
-      ),
-      body: const Center(
-        child: Text('Result Screen'),
-      ),
-    );
-  }
-}
-
-class UpdateGradesScreen extends StatelessWidget {
-  const UpdateGradesScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Update Grades'),
-      ),
-      body: const Center(
-        child: Text('Update Grades Screen'),
-      ),
     );
   }
 }

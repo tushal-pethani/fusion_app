@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'sidebar.dart';
 import 'examination_dashboard.dart';
 import 'gesture_sidebar.dart';
+import 'bottom_bar.dart'; // Import the new bottom bar component
 
 class AnnouncementScreen extends StatefulWidget {
   const AnnouncementScreen({super.key});
@@ -784,36 +785,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              label: 'Courses',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-          currentIndex: 0,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: true,
-          onTap: (index) {
-            if (index == 0) {
-              Navigator.pop(context);
-            }
-          },
-        ),
+        bottomNavigationBar: const BottomBar(currentIndex: 0),
       ),
     );
   }

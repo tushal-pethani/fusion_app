@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
-import 'dart:ui'; // Add this import for ImageFilter
 import 'examination_dashboard.dart';
 import 'sidebar.dart';
 import 'gesture_sidebar.dart';
+import 'profile.dart';
+import 'search_screen.dart';
+import 'bottom_bar.dart'; // Import the new bottom bar component
 
 class GenerateTranscriptScreen extends StatefulWidget {
   const GenerateTranscriptScreen({Key? key}) : super(key: key);
@@ -320,41 +322,7 @@ class _GenerateTranscriptScreenState extends State<GenerateTranscriptScreen> {
               ),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              label: 'Courses',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-          currentIndex: 0,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: true,
-          onTap: (index) {
-            if (index == 0) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ExaminationDashboard(),
-                ),
-              );
-            }
-          },
-        ),
+        bottomNavigationBar: const BottomBar(currentIndex: 0),
       ),
     );
   }
@@ -516,41 +484,7 @@ class TranscriptTableScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Courses',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: 0,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ExaminationDashboard(),
-              ),
-            );
-          }
-        },
-      ),
+      bottomNavigationBar: const BottomBar(currentIndex: 0),
     );
   }
 }

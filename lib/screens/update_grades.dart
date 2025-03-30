@@ -3,6 +3,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'examination_dashboard.dart';
 import 'sidebar.dart';
 import 'gesture_sidebar.dart';
+import 'bottom_bar.dart'; // Import the new bottom bar component
+import 'home.dart'; // Import home screen for notification navigation
 
 class UpdateGradesScreen extends StatefulWidget {
   const UpdateGradesScreen({Key? key}) : super(key: key);
@@ -459,27 +461,26 @@ class _UpdateGradesScreenState extends State<UpdateGradesScreen> {
         appBar: AppBar(
           title: const Text(
             'Update Grades',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
           elevation: 0,
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          backgroundColor: Colors.blue.shade700,
+          foregroundColor: Colors.white,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.blue),
+            icon: const Icon(Icons.menu, color: Colors.white),
             onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ExaminationDashboard(),
-                ),
-              );
+              _scaffoldKey.currentState!.openDrawer();
             },
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.menu, color: Colors.blue),
+              icon: const Icon(Icons.notifications, color: Colors.white),
               onPressed: () {
-                _scaffoldKey.currentState!.openDrawer();
+                // Navigate to home screen when notification bell is clicked
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
               },
             ),
           ],
@@ -917,36 +918,7 @@ class _UpdateGradesScreenState extends State<UpdateGradesScreen> {
               ),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              label: 'Courses',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-          currentIndex: 0,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: true,
-          onTap: (index) {
-            if (index == 0) {
-              Navigator.pop(context);
-            }
-          },
-        ),
+        bottomNavigationBar: const BottomBar(currentIndex: 0),
       ),
     );
   }

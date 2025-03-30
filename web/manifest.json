@@ -1,6 +1,6 @@
 {
-    "name": "fusion_app",
-    "short_name": "fusion_app",
+    "name": "Fusion",
+    "short_name": "Fusion",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#ffffff",
