@@ -335,48 +335,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return filtered;
   }
 
-  Color _getPriorityColor(String priority) {
-    switch (priority) {
-      case 'High':
-        return Colors.red.shade600;
-      case 'Medium':
-        return Colors.orange.shade600;
-      case 'Low':
-        return Colors.green.shade600;
-      default:
-        return Colors.blue.shade600;
-    }
-  }
-
-  Icon _getModuleIcon(String module) {
-    switch (module) {
-      case 'Examination':
-        return const Icon(Icons.school, color: Colors.white);
-      case 'Library':
-        return const Icon(Icons.local_library, color: Colors.white);
-      case 'Hostel':
-        return const Icon(Icons.apartment, color: Colors.white);
-      case 'Placement':
-        return const Icon(Icons.work, color: Colors.white);
-      case 'Research':
-        return const Icon(Icons.science, color: Colors.white);
-      case 'Academic':
-        return const Icon(Icons.book, color: Colors.white);
-      case 'HR':
-        return const Icon(Icons.people, color: Colors.white);
-      case 'Event':
-        return const Icon(Icons.event, color: Colors.white);
-      case 'Finance':
-        return const Icon(Icons.account_balance, color: Colors.white);
-      case 'Patent':
-        return const Icon(Icons.brightness_7, color: Colors.white);
-      case 'File Tracking':
-        return const Icon(Icons.file_copy, color: Colors.white);
-      default:
-        return const Icon(Icons.notifications, color: Colors.white);
-    }
-  }
-
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
@@ -611,6 +569,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 _selectedDateFilter = 'All';
               });
             },
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
             child: Text(
               'Reset',
               style: TextStyle(
@@ -618,11 +581,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 fontWeight: FontWeight.w500,
                 fontSize: 13,
               ),
-            ),
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           ),
         ],
@@ -981,6 +939,30 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 ),
               ),
               
+              onExpansionChanged: (expanded) {
+                if (expanded && announcement['isUnread']) {
+                  setState(() {
+                    announcement['isUnread'] = false;
+                  });
+                }
+              },
+              
+              // Trailing icon
+              trailing: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ),
+              
               // Expansion content
               children: [
                 Container(
@@ -1011,30 +993,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   ),
                 ),
               ],
-              
-              onExpansionChanged: (expanded) {
-                if (expanded && announcement['isUnread']) {
-                  setState(() {
-                    announcement['isUnread'] = false;
-                  });
-                }
-              },
-              
-              // Trailing icon
-              trailing: Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-              ),
             ),
           ),
         );

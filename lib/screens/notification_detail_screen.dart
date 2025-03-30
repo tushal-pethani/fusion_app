@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'home.dart';
-import '../main.dart'; // Import ExitConfirmationWrapper
 
 class NotificationDetailScreen extends StatelessWidget {
   final Map<String, dynamic> notification;
@@ -11,45 +9,12 @@ class NotificationDetailScreen extends StatelessWidget {
     required this.notification,
   }) : super(key: key);
 
-  Icon _getModuleIcon(String module) {
-    switch (module) {
-      case 'Examination':
-        return const Icon(Icons.school, color: Colors.white);
-      case 'Library':
-        return const Icon(Icons.local_library, color: Colors.white);
-      case 'Hostel':
-        return const Icon(Icons.apartment, color: Colors.white);
-      case 'Placement':
-        return const Icon(Icons.work, color: Colors.white);
-      case 'Research':
-        return const Icon(Icons.science, color: Colors.white);
-      case 'Academic':
-        return const Icon(Icons.book, color: Colors.white);
-      case 'HR':
-        return const Icon(Icons.people, color: Colors.white);
-      case 'Event':
-        return const Icon(Icons.event, color: Colors.white);
-      case 'Finance':
-        return const Icon(Icons.account_balance, color: Colors.white);
-      case 'Patent':
-        return const Icon(Icons.brightness_7, color: Colors.white);
-      case 'File Tracking':
-        return const Icon(Icons.file_copy, color: Colors.white);
-      default:
-        return const Icon(Icons.notifications, color: Colors.white);
-    }
-  }
-
   String _formatDate(DateTime date) {
     return DateFormat('MMM d, yyyy • h:mm a').format(date);
   }
 
   @override
   Widget build(BuildContext context) {
-    final MediaQueryData mediaQuery = MediaQuery.of(context);
-    final double statusBarHeight = mediaQuery.padding.top;
-    final double appBarHeight = 80.0;
-
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -111,7 +76,7 @@ class NotificationDetailScreen extends StatelessWidget {
           
           // Add padding to prevent content overlap with app bar
           SliverPadding(
-            padding: EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.only(top: 10),
             sliver: SliverToBoxAdapter(
               child: Column(
                 children: [
@@ -204,7 +169,7 @@ class NotificationDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              Align(
+                              const Align(
                                 alignment: Alignment.bottomRight,
                                 child: Icon(
                                   Icons.format_quote,

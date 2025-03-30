@@ -193,6 +193,7 @@ class _ExitConfirmationWrapperState extends State<ExitConfirmationWrapper> {
 
   @override
   Widget build(BuildContext context) {
+    // Replaced 'PopScope' with 'WillPopScope' to handle back navigation properly
     return WillPopScope(
       onWillPop: _onWillPop,
       child: widget.child,

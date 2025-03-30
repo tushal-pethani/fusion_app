@@ -53,7 +53,7 @@ class _SidebarState extends State<Sidebar> {
     'Faculty Member': Colors.blue,
     'Dean': Colors.purple,
     'HOD': Colors.teal,
-    'Student': Color(0xFF0D47A1), // Dark blue color
+    'Student': const Color(0xFF0D47A1), // Dark blue color
     'Admin': Colors.deepPurple,
   };
 

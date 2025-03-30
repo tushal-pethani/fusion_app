@@ -202,8 +202,6 @@ class _ValidateGradesScreenState extends State<ValidateGradesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-    final bool isSmallScreen = screenSize.width < 600;
 
     return GestureSidebar(
       scaffoldKey: _scaffoldKey,

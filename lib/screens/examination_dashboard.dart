@@ -9,9 +9,8 @@ import 'result.dart'; // Import the ResultScreen
 import 'validate_grades.dart'; // Import the ValidateGradesScreen
 import 'gesture_sidebar.dart';
 import 'profile.dart'; // Import the new ProfileScreen
-import 'search_screen.dart'; // Import the new SearchScreen
+// Import the new SearchScreen
 import 'home.dart'; // Import HomeScreen for navigation
-import 'bottom_bar.dart';
 import '../main.dart'; // Import ExitConfirmationWrapper
 
 class ExaminationDashboard extends StatefulWidget {
@@ -22,14 +21,9 @@ class ExaminationDashboard extends StatefulWidget {
 }
 
 class _ExaminationDashboardState extends State<ExaminationDashboard> {
-  int _selectedIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _handleNavigation(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
     if (index == 2) {
       Navigator.push(
         context,
@@ -118,18 +112,18 @@ class _ExaminationDashboardState extends State<ExaminationDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // When back button is pressed, navigate to home with exit confirmation
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                const ExitConfirmationWrapper(child: HomeScreen()),
-          ),
-          (route) => false,
-        );
-        return false; // Prevent default back behavior
+    return PopScope(
+      onPopInvokedWithResult: (didPop) {
+        if (didPop) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  const ExitConfirmationWrapper(child: HomeScreen()),
+            ),
+            (route) => false,
+          );
+        }
       },
       child: GestureSidebar(
         scaffoldKey: _scaffoldKey,

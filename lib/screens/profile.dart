@@ -13,7 +13,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   // User information (this would typically come from a state management solution or API)
-  Map<String, dynamic> _userData = {
+  final Map<String, dynamic> _userData = {
     'name': 'Maitrek Patel',
     'email': 'maitrek.patel@example.com',
     'phone': '+91 9876543210',
@@ -58,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     'Faculty Member': Colors.blue,
     'Dean': Colors.purple,
     'HOD': Colors.teal,
-    'Student': Color(0xFF0D47A1), // Dark blue color
+    'Student': const Color(0xFF0D47A1), // Dark blue color
     'Admin': Colors.deepPurple,
   };
 
@@ -348,7 +348,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Profile',
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
@@ -536,7 +536,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
@@ -544,7 +544,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 size: 14,
                                 color: Colors.white,
                               ),
-                              const SizedBox(width: 6),
+                              SizedBox(width: 6),
                               Text(
                                 'SWITCH POSITION',
                                 style: TextStyle(

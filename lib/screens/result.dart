@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'examination_dashboard.dart';
 import 'sidebar.dart';
 import 'gesture_sidebar.dart';
-import 'profile.dart';
-import 'search_screen.dart';
 import 'bottom_bar.dart'; // Import the new bottom bar component
 
 class ResultScreen extends StatefulWidget {
