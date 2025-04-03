@@ -113,7 +113,7 @@ class _ExaminationDashboardState extends State<ExaminationDashboard> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvokedWithResult: (didPop) {
+      onPopInvoked: (didPop) {
         if (didPop) {
           Navigator.pushAndRemoveUntil(
             context,

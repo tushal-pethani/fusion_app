@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/home.dart';
+import 'screens/splash_video_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +22,8 @@ class MyApp extends StatelessWidget {
       navigatorObservers: [ExitConfirmationObserver()],
       initialRoute: '/',
       routes: {
-        '/': (context) => const ExitConfirmationWrapper(child: HomeScreen()),
+        '/': (context) => const SplashVideoScreen(),
+        '/home': (context) => const ExitConfirmationWrapper(child: HomeScreen()),
       },
     );
   }
