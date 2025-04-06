@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'examination_dashboard.dart';
-import 'sidebar.dart';
-import 'gesture_sidebar.dart';
-import 'bottom_bar.dart'; // Import the new bottom bar component
+import '../../utils/sidebar.dart';
+import '../../utils/gesture_sidebar.dart';
+import '../../utils/bottom_bar.dart'; // Import the new bottom bar component
 
 class GenerateTranscriptScreen extends StatefulWidget {
   const GenerateTranscriptScreen({Key? key}) : super(key: key);

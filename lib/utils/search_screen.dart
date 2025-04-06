@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'announcement_screen.dart';
-import 'submit_grades.dart';
-import 'verify_grades.dart';
-import 'update_grades.dart';
-import 'generate_transcript.dart';
-import 'result.dart';
-import 'validate_grades.dart';
+import '../screens/Examination/announcement_screen.dart';
+import '../screens/Examination/submit_grades.dart';
+import '../screens/Examination/verify_grades.dart';
+import '../screens/Examination/update_grades.dart';
+import '../screens/Examination/generate_transcript.dart';
+import '../screens/Examination/result.dart';
+import '../screens/Examination/validate_grades.dart';
 import 'profile.dart';
-import 'examination_dashboard.dart';
+import '../screens/Examination/examination_dashboard.dart';
 import 'bottom_bar.dart'; // Import the bottom bar
 
 class SearchScreen extends StatefulWidget {

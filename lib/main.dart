@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'screens/home.dart';
-import 'screens/splash_video_screen.dart';
+import 'utils/home.dart';
+import 'utils/splash_video_screen.dart';
 
 void main() {
   runApp(const MyApp());

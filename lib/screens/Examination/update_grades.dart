@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'sidebar.dart';
-import 'gesture_sidebar.dart';
-import 'bottom_bar.dart'; // Import the new bottom bar component
-import 'home.dart'; // Import home screen for notification navigation
+import '../../utils/sidebar.dart';
+import '../../utils/gesture_sidebar.dart';
+import '../../utils/bottom_bar.dart'; // Import the new bottom bar component
+import '../../utils/home.dart'; // Import home screen for notification navigation
 
 class UpdateGradesScreen extends StatefulWidget {
   const UpdateGradesScreen({Key? key}) : super(key: key);

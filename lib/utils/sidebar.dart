@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../services/user_preferences_service.dart';
-import 'examination_dashboard.dart';
-import 'submit_grades.dart';
-import 'update_grades.dart';
-import 'result.dart';
+import '../screens/Examination/examination_dashboard.dart';
+import '../screens/Examination/submit_grades.dart';
+import '../screens/Examination/update_grades.dart';
+import '../screens/Examination/result.dart';
 import 'home.dart'; // Import home screen
 
 class Sidebar extends StatefulWidget {

@@ -3,10 +3,10 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:file_picker/file_picker.dart';
-import 'sidebar.dart';
+import '../../utils/sidebar.dart';
 import 'examination_dashboard.dart';
-import 'gesture_sidebar.dart';
-import 'bottom_bar.dart'; // Import the new bottom bar component
+import '../../utils/gesture_sidebar.dart';
+import '../../utils/bottom_bar.dart'; // Import the new bottom bar component
 
 class AnnouncementScreen extends StatefulWidget {
   const AnnouncementScreen({super.key});

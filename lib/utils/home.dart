@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'sidebar.dart';
 import 'gesture_sidebar.dart';
 import 'bottom_bar.dart';
-import 'examination_dashboard.dart';
+import '../screens/Examination/examination_dashboard.dart';
 import 'notification_detail_screen.dart';
 import '../main.dart';  // Import main.dart for ExitConfirmationWrapper
 

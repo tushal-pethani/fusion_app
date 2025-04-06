@@ -3,9 +3,9 @@ import 'package:path/path.dart' as path;
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'examination_dashboard.dart';
-import 'sidebar.dart';
-import 'gesture_sidebar.dart';
-import 'bottom_bar.dart'; // Import the new bottom bar component
+import '../../utils/sidebar.dart';
+import '../../utils/gesture_sidebar.dart';
+import '../../utils/bottom_bar.dart'; // Import the new bottom bar component
 
 class SubmitGradesScreen extends StatefulWidget {
   const SubmitGradesScreen({super.key});

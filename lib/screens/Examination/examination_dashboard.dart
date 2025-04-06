@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'sidebar.dart' as sidebar;
+import '../../utils/sidebar.dart' as sidebar;
 import 'announcement_screen.dart';
 import 'submit_grades.dart';
 import 'verify_grades.dart';
@@ -7,11 +7,11 @@ import 'update_grades.dart'; // Import the UpdateGradesScreen
 import 'generate_transcript.dart';
 import 'result.dart'; // Import the ResultScreen
 import 'validate_grades.dart'; // Import the ValidateGradesScreen
-import 'gesture_sidebar.dart';
-import 'profile.dart'; // Import the new ProfileScreen
+import '../../utils/gesture_sidebar.dart';
+import '../../utils/profile.dart'; // Import the new ProfileScreen
 // Import the new SearchScreen
-import 'home.dart'; // Import HomeScreen for navigation
-import '../main.dart'; // Import ExitConfirmationWrapper
+import '../../utils/home.dart'; // Import HomeScreen for navigation
+import '../../main.dart'; // Import ExitConfirmationWrapper
 
 class ExaminationDashboard extends StatefulWidget {
   const ExaminationDashboard({super.key});
