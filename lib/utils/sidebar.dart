@@ -4,6 +4,7 @@ import '../screens/Examination/examination_dashboard.dart';
 import '../screens/Examination/submit_grades.dart';
 import '../screens/Examination/update_grades.dart';
 import '../screens/Examination/result.dart';
+import '../screens/PlacementCell/placement_dashboard.dart'; // Import PlacementDashboard
 import 'home.dart'; // Import home screen
 
 class Sidebar extends StatefulWidget {
@@ -477,13 +478,9 @@ class _SidebarState extends State<Sidebar> {
                       title: 'Validate Grades',
                       index: 6),
                   _buildSubNavItem(context,
-                      icon: Icons.update,
-                      title: 'Update Grades',
-                      index: 7),
+                      icon: Icons.update, title: 'Update Grades', index: 7),
                   _buildSubNavItem(context,
-                      icon: Icons.assessment,
-                      title: 'Result',
-                      index: 8),
+                      icon: Icons.assessment, title: 'Result', index: 8),
                   ListTile(
                     leading: const Icon(Icons.assessment),
                     title: const Text('View Results'),
@@ -690,6 +687,15 @@ class _SidebarState extends State<Sidebar> {
                     setState(() {
                       _isPlacementExpanded = !_isPlacementExpanded;
                     });
+                  },
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PlacementDashboard(),
+                      ),
+                    );
                   },
                 ),
                 if (_isPlacementExpanded) ...[

@@ -9,14 +9,12 @@ import '../screens/Examination/validate_grades.dart';
 import 'profile.dart';
 import '../screens/Examination/examination_dashboard.dart';
 import 'bottom_bar.dart'; // Import the bottom bar
+import '../screens/PlacementCell/placement_dashboard.dart'; // Import PlacementDashboard
 
 class SearchScreen extends StatefulWidget {
   final bool autoFocusSearch;
-  
-  const SearchScreen({
-    super.key, 
-    this.autoFocusSearch = false
-  });
+
+  const SearchScreen({super.key, this.autoFocusSearch = false});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -112,7 +110,7 @@ class _SearchScreenState extends State<SearchScreen> {
         name: 'Placement',
         icon: Icons.work,
         color: Colors.blue.shade700,
-        route: (context) => const AnnouncementScreen(), // Placeholder
+        route: (context) => const PlacementDashboard(),
       ),
       // Human Resources module
       ModuleItem(
@@ -277,15 +275,15 @@ class _SearchScreenState extends State<SearchScreen> {
 
     // First search for exact module matches
     List<ModuleItem> moduleMatches = _allModules
-        .where((module) => module.name.toLowerCase().contains(query.toLowerCase()))
+        .where(
+            (module) => module.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
 
     // Then search for submodule matches
     List<SubModuleItem> subModuleMatches = _allSubModules
-        .where((subModule) => 
+        .where((subModule) =>
             subModule.name.toLowerCase().contains(query.toLowerCase()) ||
-            subModule.description.toLowerCase().contains(query.toLowerCase())
-        )
+            subModule.description.toLowerCase().contains(query.toLowerCase()))
         .toList();
 
     // Create a set of parent module names from matching submodules
@@ -296,7 +294,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
     // Add parent modules that aren't already in moduleMatches
     for (var parentName in parentModuleNames) {
-      bool alreadyIncluded = moduleMatches.any((module) => module.name == parentName);
+      bool alreadyIncluded =
+          moduleMatches.any((module) => module.name == parentName);
       if (!alreadyIncluded) {
         var parentModule = _allModules.firstWhere(
           (module) => module.name == parentName,
@@ -324,11 +323,12 @@ class _SearchScreenState extends State<SearchScreen> {
 
   List<SubModuleItem> _getMatchingSubModules(String query, String moduleName) {
     return _allSubModules
-        .where((subModule) => 
+        .where((subModule) =>
             subModule.parentModule == moduleName &&
             (subModule.name.toLowerCase().contains(query.toLowerCase()) ||
-             subModule.description.toLowerCase().contains(query.toLowerCase()))
-        )
+                subModule.description
+                    .toLowerCase()
+                    .contains(query.toLowerCase())))
         .toList();
   }
 
@@ -418,7 +418,8 @@ class _SearchScreenState extends State<SearchScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.info_outline, size: 80, color: Colors.grey),
+                                Icon(Icons.info_outline,
+                                    size: 80, color: Colors.grey),
                                 SizedBox(height: 16),
                                 Text(
                                   'No results found',
@@ -457,7 +458,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildModuleListItem(BuildContext context, ModuleItem module) {
     final subModules = _getSubModulesForModule(module.name);
-    
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 2,
@@ -488,7 +489,8 @@ class _SearchScreenState extends State<SearchScreen> {
             color: Colors.grey.shade600,
           ),
         ),
-        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey.shade600),
+        trailing: Icon(Icons.arrow_forward_ios,
+            size: 16, color: Colors.grey.shade600),
         onTap: () {
           if (subModules.isNotEmpty) {
             _showModuleDetails(context, module);
@@ -506,7 +508,8 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildSearchResultItem(BuildContext context, ModuleItem module) {
     // Find matching subsections if any
     final String query = _searchController.text.toLowerCase();
-    final List<SubModuleItem> matchingSubModules = _getMatchingSubModules(query, module.name);
+    final List<SubModuleItem> matchingSubModules =
+        _getMatchingSubModules(query, module.name);
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -555,7 +558,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               ),
               child: const Text('Open'),
             ),
@@ -586,14 +590,16 @@ class _SearchScreenState extends State<SearchScreen> {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: matchingSubModules.length > 3 ? 3 : matchingSubModules.length,
+              itemCount:
+                  matchingSubModules.length > 3 ? 3 : matchingSubModules.length,
               itemBuilder: (context, index) {
                 return _buildSubModuleItem(context, matchingSubModules[index]);
               },
             ),
             if (matchingSubModules.length > 3)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: OutlinedButton(
                   onPressed: () {
                     _showModuleDetails(context, module);
@@ -656,7 +662,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void _showModuleDetails(BuildContext context, ModuleItem module) {
     final List<SubModuleItem> subModules = _getSubModulesForModule(module.name);
-    
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -720,7 +726,8 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.info_outline, size: 80, color: Colors.grey.shade300),
+                          Icon(Icons.info_outline,
+                              size: 80, color: Colors.grey.shade300),
                           const SizedBox(height: 16),
                           const Text(
                             'No features available',
@@ -739,7 +746,8 @@ class _SearchScreenState extends State<SearchScreen> {
                       controller: scrollController,
                       itemCount: subModules.length,
                       itemBuilder: (context, index) {
-                        return _buildSubModuleDetailItem(context, subModules[index]);
+                        return _buildSubModuleDetailItem(
+                            context, subModules[index]);
                       },
                     ),
                   ),
@@ -775,17 +783,20 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildSubModuleDetailItem(BuildContext context, SubModuleItem subModule) {
+  Widget _buildSubModuleDetailItem(
+      BuildContext context, SubModuleItem subModule) {
     final String query = _searchController.text.toLowerCase();
-    final bool isMatching = subModule.name.toLowerCase().contains(query) || 
-                           subModule.description.toLowerCase().contains(query);
-    
+    final bool isMatching = subModule.name.toLowerCase().contains(query) ||
+        subModule.description.toLowerCase().contains(query);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: isMatching ? subModule.color.withOpacity(0.05) : null,
-        border: isMatching ? Border.all(color: subModule.color.withOpacity(0.3)) : null,
+        border: isMatching
+            ? Border.all(color: subModule.color.withOpacity(0.3))
+            : null,
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.all(12),
