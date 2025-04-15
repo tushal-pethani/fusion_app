@@ -4,6 +4,7 @@ import '../../utils/gesture_sidebar.dart';
 import '../../utils/home.dart'; // Import HomeScreen for navigation
 import '../../utils/bottom_bar.dart'; // Import BottomBar
 import '../../main.dart'; // Import ExitConfirmationWrapper
+import 'view_jobs.dart';
 
 class PlacementDashboard extends StatefulWidget {
   const PlacementDashboard({super.key});
@@ -23,7 +24,12 @@ class _PlacementDashboardState extends State<PlacementDashboard> {
     } else if (index == 39) {
       _showComingSoonSnackBar('Upload Offer Letter');
     } else if (index == 40) {
-      _showComingSoonSnackBar('View Jobs');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ViewJobsScreen(),
+        ),
+      );
     } else if (index == 41) {
       _showComingSoonSnackBar('Create Resume');
     } else if (index == 42) {

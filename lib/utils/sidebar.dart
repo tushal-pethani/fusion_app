@@ -114,6 +114,28 @@ class _SidebarState extends State<Sidebar> {
     }
   }
 
+  List<Map<String, dynamic>> _buildMenuItems() {
+    return [
+      // ...existing code...
+
+      // Replace the Placement Cell section with new items
+      {
+        'title': 'Placement Cell',
+        'icon': Icons.business_center,
+        'subitems': [
+          {'title': 'View Placement Schedule', 'index': 37},
+          {'title': 'Upload Documents', 'index': 38},
+          {'title': 'Upload Offer Letter', 'index': 39},
+          {'title': 'View Jobs', 'index': 40},
+          {'title': 'Create Resume', 'index': 41},
+          {'title': 'View Applications', 'index': 42},
+        ],
+      },
+
+      // ...existing code...
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -700,13 +722,23 @@ class _SidebarState extends State<Sidebar> {
                 ),
                 if (_isPlacementExpanded) ...[
                   _buildSubNavItem(context,
-                      icon: Icons.business, title: 'Companies', index: 37),
+                      icon: Icons.calendar_today,
+                      title: 'View Placement Schedule',
+                      index: 37),
                   _buildSubNavItem(context,
-                      icon: Icons.badge, title: 'Job Postings', index: 38),
+                      icon: Icons.upload_file,
+                      title: 'Upload Documents',
+                      index: 38),
                   _buildSubNavItem(context,
-                      icon: Icons.trending_up,
-                      title: 'Placement Statistics',
+                      icon: Icons.insert_drive_file,
+                      title: 'Upload Offer Letter',
                       index: 39),
+                  _buildSubNavItem(context,
+                      icon: Icons.work, title: 'View Jobs', index: 40),
+                  _buildSubNavItem(context,
+                      icon: Icons.description, title: 'Create Resume', index: 41),
+                  _buildSubNavItem(context,
+                      icon: Icons.list_alt, title: 'View Applications', index: 42),
                 ],
 
                 // Human Resources Module (New)

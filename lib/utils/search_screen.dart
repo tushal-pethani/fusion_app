@@ -10,11 +10,17 @@ import 'profile.dart';
 import '../screens/Examination/examination_dashboard.dart';
 import 'bottom_bar.dart'; // Import the bottom bar
 import '../screens/PlacementCell/placement_dashboard.dart'; // Import PlacementDashboard
+import '../screens/PlacementCell/view_jobs.dart';
 
 class SearchScreen extends StatefulWidget {
   final bool autoFocusSearch;
+  final Function(int)? onItemSelected; // Add this parameter
 
-  const SearchScreen({super.key, this.autoFocusSearch = false});
+  const SearchScreen({
+    super.key,
+    this.autoFocusSearch = false,
+    this.onItemSelected, // Include the parameter here
+  });
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -261,8 +267,82 @@ class _SearchScreenState extends State<SearchScreen> {
         description: 'Manage vendor information and contracts',
       ),
 
+      // Add Placement sub-modules
+      SubModuleItem(
+        name: 'View Placement Schedule',
+        icon: Icons.calendar_today,
+        color: Colors.blue.shade700,
+        route: (context) => const PlacementDashboard(),
+        parentModule: 'Placement',
+        description: 'View upcoming placement schedules and events',
+      ),
+      SubModuleItem(
+        name: 'Upload Documents',
+        icon: Icons.upload_file,
+        color: Colors.blue.shade700,
+        route: (context) => const PlacementDashboard(),
+        parentModule: 'Placement',
+        description: 'Upload required documents for placement',
+      ),
+      SubModuleItem(
+        name: 'Upload Offer Letter',
+        icon: Icons.insert_drive_file,
+        color: Colors.blue.shade700,
+        route: (context) => const PlacementDashboard(),
+        parentModule: 'Placement',
+        description: 'Upload your offer letters from companies',
+      ),
+      SubModuleItem(
+        name: 'View Jobs',
+        icon: Icons.work,
+        color: Colors.blue.shade700,
+        route: (context) => const ViewJobsScreen(),
+        parentModule: 'Placement',
+        description: 'Browse available job opportunities',
+      ),
+      SubModuleItem(
+        name: 'Create Resume',
+        icon: Icons.description,
+        color: Colors.blue.shade700,
+        route: (context) => const PlacementDashboard(),
+        parentModule: 'Placement',
+        description: 'Create and edit your professional resume',
+      ),
+      SubModuleItem(
+        name: 'View Applications',
+        icon: Icons.list_alt,
+        color: Colors.blue.shade700,
+        route: (context) => const PlacementDashboard(),
+        parentModule: 'Placement',
+        description: 'Track your submitted job applications',
+      ),
+
       // Add submodules for other main modules as needed
     ]);
+  }
+
+  List<Map<String, dynamic>> _getAllSearchItems() {
+    return [
+      // Add other search items here...
+
+      // Replace the Placement Cell items
+      {
+        'title': 'View Placement Schedule',
+        'index': 37,
+        'category': 'Placement Cell'
+      },
+      {'title': 'Upload Documents', 'index': 38, 'category': 'Placement Cell'},
+      {
+        'title': 'Upload Offer Letter',
+        'index': 39,
+        'category': 'Placement Cell'
+      },
+      {'title': 'View Jobs', 'index': 40, 'category': 'Placement Cell'},
+      {'title': 'Create Resume', 'index': 41, 'category': 'Placement Cell'},
+      {'title': 'View Applications', 'index': 42, 'category': 'Placement Cell'},
+
+      // Add other search items here...
+    ];
   }
 
   void _performSearch(String query) {
@@ -330,6 +410,13 @@ class _SearchScreenState extends State<SearchScreen> {
                     .toLowerCase()
                     .contains(query.toLowerCase())))
         .toList();
+  }
+
+  void _handleItemSelected(int index) {
+    Navigator.pop(context);
+    if (widget.onItemSelected != null) {
+      widget.onItemSelected!(index);
+    }
   }
 
   @override
