@@ -9,6 +9,7 @@ import 'placement_schedule.dart'; // Import PlacementScheduleScreen
 import 'upload_documents.dart'; // Import UploadDocumentsScreen
 import 'upload_offer_letter.dart'; // Import UploadOfferLetterScreen
 import 'view_applications.dart'; // Import ViewApplicationsScreen
+import 'create_resume.dart'; // Import CreateResumeScreen
 
 class PlacementDashboard extends StatefulWidget {
   const PlacementDashboard({super.key});
@@ -52,7 +53,12 @@ class _PlacementDashboardState extends State<PlacementDashboard> {
         ),
       );
     } else if (index == 41) {
-      _showComingSoonSnackBar('Create Resume');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const CreateResumeScreen(),
+        ),
+      );
     } else if (index == 42) {
       Navigator.push(
         context,
@@ -217,7 +223,12 @@ class _PlacementDashboardState extends State<PlacementDashboard> {
                         icon: Icons.description,
                         label: 'Create Resume',
                         color: Colors.red,
-                        onTap: () => _handleNavigation(41),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CreateResumeScreen(),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 16.0),
                       _buildDashboardCard(
