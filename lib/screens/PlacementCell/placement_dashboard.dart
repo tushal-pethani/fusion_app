@@ -8,6 +8,7 @@ import 'view_jobs.dart';
 import 'placement_schedule.dart'; // Import PlacementScheduleScreen
 import 'upload_documents.dart'; // Import UploadDocumentsScreen
 import 'upload_offer_letter.dart'; // Import UploadOfferLetterScreen
+import 'view_applications.dart'; // Import ViewApplicationsScreen
 
 class PlacementDashboard extends StatefulWidget {
   const PlacementDashboard({super.key});
@@ -53,7 +54,12 @@ class _PlacementDashboardState extends State<PlacementDashboard> {
     } else if (index == 41) {
       _showComingSoonSnackBar('Create Resume');
     } else if (index == 42) {
-      _showComingSoonSnackBar('View Applications');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ViewApplicationsScreen(),
+        ),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -218,7 +224,13 @@ class _PlacementDashboardState extends State<PlacementDashboard> {
                         icon: Icons.list_alt,
                         label: 'View Applications',
                         color: Colors.teal,
-                        onTap: () => _handleNavigation(42),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const ViewApplicationsScreen(),
+                          ),
+                        ),
                       ),
                     ],
                   ),
