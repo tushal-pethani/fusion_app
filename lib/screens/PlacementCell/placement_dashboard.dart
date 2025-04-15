@@ -6,6 +6,7 @@ import '../../utils/bottom_bar.dart'; // Import BottomBar
 import '../../main.dart'; // Import ExitConfirmationWrapper
 import 'view_jobs.dart';
 import 'placement_schedule.dart'; // Import PlacementScheduleScreen
+import 'upload_documents.dart'; // Import UploadDocumentsScreen
 
 class PlacementDashboard extends StatefulWidget {
   const PlacementDashboard({super.key});
@@ -27,7 +28,13 @@ class _PlacementDashboardState extends State<PlacementDashboard> {
         ),
       );
     } else if (index == 38) {
-      _showComingSoonSnackBar('Upload Documents');
+      // Navigate to Upload Documents screen instead of showing "coming soon" message
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const UploadDocumentsScreen(),
+        ),
+      );
     } else if (index == 39) {
       _showComingSoonSnackBar('Upload Offer Letter');
     } else if (index == 40) {
@@ -171,7 +178,13 @@ class _PlacementDashboardState extends State<PlacementDashboard> {
                         icon: Icons.upload_file,
                         label: 'Upload Documents',
                         color: Colors.green,
-                        onTap: () => _handleNavigation(38),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const UploadDocumentsScreen(),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 16.0),
                       _buildDashboardCard(

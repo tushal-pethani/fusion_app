@@ -12,6 +12,7 @@ import 'bottom_bar.dart'; // Import the bottom bar
 import '../screens/PlacementCell/placement_dashboard.dart'; // Import PlacementDashboard
 import '../screens/PlacementCell/view_jobs.dart';
 import '../screens/PlacementCell/placement_schedule.dart';
+import '../screens/PlacementCell/upload_documents.dart'; // Import UploadDocumentsScreen
 
 class SearchScreen extends StatefulWidget {
   final bool autoFocusSearch;
@@ -281,7 +282,7 @@ class _SearchScreenState extends State<SearchScreen> {
         name: 'Upload Documents',
         icon: Icons.upload_file,
         color: Colors.blue.shade700,
-        route: (context) => const PlacementDashboard(),
+        route: (context) => const UploadDocumentsScreen(), // Change to actual screen
         parentModule: 'Placement',
         description: 'Upload required documents for placement',
       ),
