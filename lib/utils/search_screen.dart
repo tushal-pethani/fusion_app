@@ -11,6 +11,7 @@ import '../screens/Examination/examination_dashboard.dart';
 import 'bottom_bar.dart'; // Import the bottom bar
 import '../screens/PlacementCell/placement_dashboard.dart'; // Import PlacementDashboard
 import '../screens/PlacementCell/view_jobs.dart';
+import '../screens/PlacementCell/placement_schedule.dart';
 
 class SearchScreen extends StatefulWidget {
   final bool autoFocusSearch;
@@ -272,7 +273,7 @@ class _SearchScreenState extends State<SearchScreen> {
         name: 'View Placement Schedule',
         icon: Icons.calendar_today,
         color: Colors.blue.shade700,
-        route: (context) => const PlacementDashboard(),
+        route: (context) => const PlacementScheduleScreen(),
         parentModule: 'Placement',
         description: 'View upcoming placement schedules and events',
       ),

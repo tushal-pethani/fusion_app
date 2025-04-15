@@ -5,7 +5,10 @@ import '../screens/Examination/submit_grades.dart';
 import '../screens/Examination/update_grades.dart';
 import '../screens/Examination/result.dart';
 import '../screens/PlacementCell/placement_dashboard.dart'; // Import PlacementDashboard
+import '../screens/PlacementCell/view_jobs.dart'; // Import ViewJobsScreen
+import '../screens/PlacementCell/placement_schedule.dart'; // Import PlacementScheduleScreen
 import 'home.dart'; // Import home screen
+
 
 class Sidebar extends StatefulWidget {
   final Function(int)? onItemSelected;
@@ -990,7 +993,7 @@ class _SidebarState extends State<Sidebar> {
       onTap: () {
         // Close the drawer
         Navigator.pop(context);
-        // Navigate to Submit Grades screen if index matches
+        // Navigate based on index
         if (index == 3) {
           Navigator.push(
             context,
@@ -1001,6 +1004,18 @@ class _SidebarState extends State<Sidebar> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const UpdateGradesScreen()),
+          );
+        } else if (index == 37) {
+          // Navigate to Placement Schedule screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const PlacementScheduleScreen()),
+          );
+        } else if (index == 40) {
+          // Navigate to View Jobs screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ViewJobsScreen()),
           );
         }
         // Notify parent about selection

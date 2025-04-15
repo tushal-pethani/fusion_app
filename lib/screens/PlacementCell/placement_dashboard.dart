@@ -5,6 +5,7 @@ import '../../utils/home.dart'; // Import HomeScreen for navigation
 import '../../utils/bottom_bar.dart'; // Import BottomBar
 import '../../main.dart'; // Import ExitConfirmationWrapper
 import 'view_jobs.dart';
+import 'placement_schedule.dart'; // Import PlacementScheduleScreen
 
 class PlacementDashboard extends StatefulWidget {
   const PlacementDashboard({super.key});
@@ -18,7 +19,13 @@ class _PlacementDashboardState extends State<PlacementDashboard> {
 
   void _handleNavigation(int index) {
     if (index == 37) {
-      _showComingSoonSnackBar('View Placement Schedule');
+      // Navigate to Placement Schedule instead of showing "coming soon" message
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PlacementScheduleScreen(),
+        ),
+      );
     } else if (index == 38) {
       _showComingSoonSnackBar('Upload Documents');
     } else if (index == 39) {
@@ -148,7 +155,16 @@ class _PlacementDashboardState extends State<PlacementDashboard> {
                         icon: Icons.calendar_today,
                         label: 'View Placement Schedule',
                         color: Colors.orange,
-                        onTap: () => _handleNavigation(37),
+                        onTap: () {
+                          // Navigate directly to PlacementScheduleScreen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const PlacementScheduleScreen(),
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(height: 16.0),
                       _buildDashboardCard(
