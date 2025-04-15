@@ -7,6 +7,7 @@ import '../../main.dart'; // Import ExitConfirmationWrapper
 import 'view_jobs.dart';
 import 'placement_schedule.dart'; // Import PlacementScheduleScreen
 import 'upload_documents.dart'; // Import UploadDocumentsScreen
+import 'upload_offer_letter.dart'; // Import UploadOfferLetterScreen
 
 class PlacementDashboard extends StatefulWidget {
   const PlacementDashboard({super.key});
@@ -36,7 +37,12 @@ class _PlacementDashboardState extends State<PlacementDashboard> {
         ),
       );
     } else if (index == 39) {
-      _showComingSoonSnackBar('Upload Offer Letter');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const UploadOfferLetterScreen(),
+        ),
+      );
     } else if (index == 40) {
       Navigator.push(
         context,

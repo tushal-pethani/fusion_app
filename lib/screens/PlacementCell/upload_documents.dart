@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'dart:io';
-import 'dart:math';
 import 'placement_dashboard.dart';
 import '../../utils/sidebar.dart';
 import '../../utils/gesture_sidebar.dart';
@@ -17,66 +15,49 @@ class UploadDocumentsScreen extends StatefulWidget {
 class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = false;
+
   final TextEditingController _documentNameController = TextEditingController();
-  String _selectedDocumentType = 'Marksheet';
+  String? _selectedDocumentType;
   PlatformFile? _selectedFile;
 
-  // Modified mock data for previously uploaded documents - removed 'Verified' status
-  final List<Map<String, dynamic>> _uploadedDocuments = [
-    {
-      'name': 'Semester 5 Marksheet',
-      'type': 'Marksheet',
-      'date': '10 May 2023',
-      'fileSize': '325 KB',
-      'fileType': 'PDF',
-      'icon': Icons.picture_as_pdf,
-      'color': Colors.red,
-    },
-    {
-      'name': 'BTech Degree Certificate',
-      'type': 'Certificate',
-      'date': '15 Mar 2023',
-      'fileSize': '2.1 MB',
-      'fileType': 'PDF',
-      'icon': Icons.picture_as_pdf,
-      'color': Colors.red,
-    },
-    {
-      'name': 'Fee Receipt Sem 6',
-      'type': 'Fee Receipt',
-      'date': '28 Feb 2023',
-      'fileSize': '180 KB',
-      'fileType': 'JPEG',
-      'icon': Icons.image,
-      'color': Colors.blue,
-    },
-    {
-      'name': 'Internship Completion Certificate',
-      'type': 'Certificate',
-      'date': '12 Jan 2023',
-      'fileSize': '450 KB',
-      'fileType': 'PNG',
-      'icon': Icons.image,
-      'color': Colors.green,
-    },
-  ];
-
   final List<String> _documentTypes = [
-    'Marksheet',
-    'Certificate',
-    'Fee Receipt',
-    'ID Card',
-    'Internship Letter',
-    'Passport',
-    'Resume',
+    'Resume/CV',
+    'Photo ID',
+    'Academic Transcript',
+    'Recommendation Letter',
+    'Passport Size Photo',
     'Other',
   ];
 
-  @override
-  void dispose() {
-    _documentNameController.dispose();
-    super.dispose();
-  }
+  final List<Map<String, dynamic>> _uploadedDocuments = [
+    {
+      'name': 'Resume 2024',
+      'type': 'Resume/CV',
+      'fileSize': '245 KB',
+      'date': '15/05/2024',
+      'icon': Icons.description,
+      'color': Colors.blue,
+      'status': 'Verified',
+    },
+    {
+      'name': 'BTech Transcript',
+      'type': 'Academic Transcript',
+      'fileSize': '1.2 MB',
+      'date': '10/04/2024',
+      'icon': Icons.school,
+      'color': Colors.purple,
+      'status': 'Pending Verification',
+    },
+    {
+      'name': 'Passport Photo',
+      'type': 'Passport Size Photo',
+      'fileSize': '120 KB',
+      'date': '15/01/2024',
+      'icon': Icons.photo_camera,
+      'color': Colors.teal,
+      'status': 'Needs Update',
+    },
+  ];
 
   void _showSnackBar(String message, {bool isError = false}) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -91,44 +72,65 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
 
   Future<void> _selectFile() async {
     try {
-      setState(() {
-        _isLoading = true;
-      });
-
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'],
         allowMultiple: false,
       );
 
-      setState(() {
-        _isLoading = false;
-      });
-
       if (result != null) {
         setState(() {
           _selectedFile = result.files.first;
-
-          // Auto-populate document name based on file name
-          String fileName = _selectedFile!.name;
-          // Remove file extension
-          fileName = fileName.split('.').first;
-          // Capitalize each word
-          fileName = fileName.split('_').map((word) =>
-              word.isNotEmpty ? '${word[0].toUpperCase()}${word.substring(1)}' : '').join(' ');
-
-          _documentNameController.text = fileName;
         });
-
-        _showSnackBar('File selected: ${_selectedFile!.name}');
       }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
+      _showSnackBar('Error selecting file: $e', isError: true);
+    }
+  }
+
+  Future<void> _uploadDocument() async {
+    if (_documentNameController.text.trim().isEmpty) {
+      _showSnackBar('Please enter a document name', isError: true);
+      return;
+    }
+
+    if (_selectedDocumentType == null) {
+      _showSnackBar('Please select a document type', isError: true);
+      return;
+    }
+
+    if (_selectedFile == null) {
+      _showSnackBar('Please select a file to upload', isError: true);
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    final now = DateTime.now();
+    final uploadDate = "${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}";
+
+    setState(() {
+      _uploadedDocuments.add({
+        'name': _documentNameController.text.trim(),
+        'type': _selectedDocumentType!,
+        'fileSize': _formatFileSize(_selectedFile!.size),
+        'date': uploadDate,
+        'icon': _getFileIcon(_selectedFile!.name),
+        'color': _getFileColor(_selectedFile!.name),
+        'status': 'Pending Verification',
       });
 
-      _showSnackBar('Error picking file: $e', isError: true);
-    }
+      _documentNameController.clear();
+      _selectedDocumentType = null;
+      _selectedFile = null;
+      _isLoading = false;
+    });
+
+    _showSnackBar('Document uploaded successfully');
   }
 
   String _formatFileSize(int bytes) {
@@ -143,223 +145,92 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
     }
   }
 
-  void _uploadDocument() {
-    if (_documentNameController.text.isEmpty) {
-      _showSnackBar('Please enter a document name', isError: true);
-      return;
-    }
-
-    if (_selectedFile == null) {
-      _showSnackBar('Please select a file to upload', isError: true);
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    // Simulate API call with delay
-    Future.delayed(const Duration(seconds: 2), () {
-      // Create a new document entry without 'status' field
-      final newDocument = {
-        'name': _documentNameController.text,
-        'type': _selectedDocumentType,
-        'date': _getCurrentDate(),
-        'fileSize': _formatFileSize(_selectedFile!.size),
-        'fileType': _getFileType(_selectedFile!.name),
-        'icon': _getFileIcon(_selectedFile!.name),
-        'color': _getFileColor(_selectedFile!.name),
-      };
-
-      setState(() {
-        // Add to the beginning of the list
-        _uploadedDocuments.insert(0, newDocument);
-        _isLoading = false;
-
-        // Reset form
-        _documentNameController.clear();
-        _selectedFile = null;
-      });
-
-      _showSnackBar('Document uploaded successfully!');
-    });
-  }
-
-  String _getCurrentDate() {
-    final now = DateTime.now();
-    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return '${now.day} ${months[now.month - 1]} ${now.year}';
-  }
-
-  String _getFileType(String fileName) {
-    final extension = fileName.split('.').last.toUpperCase();
-    return extension;
-  }
-
   IconData _getFileIcon(String fileName) {
-    final extension = fileName.split('.').last.toLowerCase();
-    switch (extension) {
-      case 'pdf':
-        return Icons.picture_as_pdf;
-      case 'doc':
-      case 'docx':
-        return Icons.description;
-      case 'jpg':
-      case 'jpeg':
-      case 'png':
-        return Icons.image;
-      default:
-        return Icons.insert_drive_file;
+    if (fileName.endsWith('.pdf')) {
+      return Icons.picture_as_pdf;
+    } else if (fileName.endsWith('.doc') || fileName.endsWith('.docx')) {
+      return Icons.description;
+    } else if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg') || fileName.endsWith('.png')) {
+      return Icons.image;
+    } else {
+      return Icons.insert_drive_file;
     }
   }
 
   Color _getFileColor(String fileName) {
-    final extension = fileName.split('.').last.toLowerCase();
-    switch (extension) {
-      case 'pdf':
-        return Colors.red;
-      case 'doc':
-      case 'docx':
-        return Colors.blue;
-      case 'jpg':
-      case 'jpeg':
-        return Colors.orange;
-      case 'png':
-        return Colors.green;
-      default:
-        return Colors.grey;
+    if (fileName.endsWith('.pdf')) {
+      return Colors.red;
+    } else if (fileName.endsWith('.doc') || fileName.endsWith('.docx')) {
+      return Colors.blue;
+    } else if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg') || fileName.endsWith('.png')) {
+      return Colors.green;
+    } else {
+      return Colors.orange;
     }
   }
 
   void _viewDocumentDetails(Map<String, dynamic> document) {
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _buildDocumentDetailsSheet(document),
-    );
-  }
-
-  Widget _buildDocumentDetailsSheet(Map<String, dynamic> document) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.5,
-      maxChildSize: 0.95,
-      builder: (_, controller) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
+      builder: (context) => AlertDialog(
+        title: Text(
+          document['name'],
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.blue.shade800,
           ),
+        ),
+        content: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
+              _buildDetailItem('Type', document['type']),
+              _buildDetailItem('Size', document['fileSize']),
+              _buildDetailItem('Uploaded on', document['date']),
+              _buildDetailItem('Status', document['status']),
+              const SizedBox(height: 16),
               Container(
-                height: 6,
-                width: 60,
-                margin: const EdgeInsets.only(bottom: 16),
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(3),
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-              ),
-              Expanded(
-                child: ListView(
-                  controller: controller,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: document['color'].withOpacity(0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          document['icon'],
-                          size: 50,
-                          color: document['color'],
-                        ),
-                      ),
+                    Icon(
+                      document['icon'],
+                      size: 48,
+                      color: document['color'],
                     ),
-                    const SizedBox(height: 16),
-                    Center(
-                      child: Text(
-                        document['name'],
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                    const SizedBox(height: 8),
+                    Text(
+                      document['name'],
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 24),
-                    _buildDetailItem('Document Type', document['type']),
-                    _buildDetailItem('File Type', document['fileType']),
-                    _buildDetailItem('File Size', document['fileSize']),
-                    _buildDetailItem('Upload Date', document['date']),
-                    const SizedBox(height: 32),
-
-                    // Action buttons
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              _showSnackBar('Downloading document...');
-                            },
-                            icon: const Icon(Icons.download),
-                            label: const Text('Download'),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              side: BorderSide(color: Colors.blue.shade700),
-                              foregroundColor: Colors.blue.shade700,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              _showSnackBar('Opening document viewer...');
-                            },
-                            icon: const Icon(Icons.visibility),
-                            label: const Text('View'),
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              backgroundColor: Colors.blue.shade700,
-                              foregroundColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    // Delete button for all documents
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _showDeleteConfirmation(document);
-                      },
-                      icon: const Icon(Icons.delete),
-                      label: const Text('Delete Document'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        backgroundColor: Colors.red.shade700,
-                        foregroundColor: Colors.white,
-                      ),
+                    Text(
+                      document['fileSize'],
+                      style: TextStyle(color: Colors.grey.shade700),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-        );
-      },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+          TextButton(
+            onPressed: () => _showDeleteConfirmation(document),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 
@@ -499,7 +370,6 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Upload document card
                   Card(
                     elevation: 3,
                     shape: RoundedRectangleBorder(
@@ -528,8 +398,6 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                             ],
                           ),
                           const Divider(height: 24),
-
-                          // Document name field
                           TextField(
                             controller: _documentNameController,
                             decoration: InputDecoration(
@@ -542,8 +410,6 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                             ),
                           ),
                           const SizedBox(height: 16),
-
-                          // Document type dropdown
                           DropdownButtonFormField<String>(
                             value: _selectedDocumentType,
                             decoration: InputDecoration(
@@ -566,8 +432,6 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                             },
                           ),
                           const SizedBox(height: 16),
-
-                          // File picker
                           InkWell(
                             onTap: _selectFile,
                             child: Container(
@@ -619,8 +483,6 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                               ),
                             ),
                           ),
-
-                          // Show file info if selected
                           if (_selectedFile != null)
                             Padding(
                               padding: const EdgeInsets.only(top: 12.0),
@@ -674,10 +536,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                                 ),
                               ),
                             ),
-
                           const SizedBox(height: 24),
-
-                          // Upload button
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton.icon(
@@ -698,10 +557,7 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 24),
-
-                  // Previously uploaded documents section
                   Text(
                     'Your Documents',
                     style: TextStyle(
@@ -711,7 +567,6 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-
                   Expanded(
                     child: _uploadedDocuments.isEmpty
                         ? Center(
@@ -767,33 +622,48 @@ class _UploadDocumentsScreenState extends State<UploadDocumentsScreen> {
                                       fontSize: 15,
                                     ),
                                   ),
-                                  subtitle: Text(
-                                    '${document['type']} • ${document['fileSize']} • Uploaded on ${document['date']}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey.shade600,
-                                    ),
-                                  ),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      // Add delete button directly in the list
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.delete_outline,
-                                          color: Colors.red.shade400,
-                                          size: 20,
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        '${document['type']} • ${document['fileSize']} • Uploaded on ${document['date']}',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey.shade600,
                                         ),
-                                        onPressed: () => _showDeleteConfirmation(document),
                                       ),
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.more_vert,
-                                          color: Colors.grey.shade700,
+                                      const SizedBox(height: 4),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 2,
                                         ),
-                                        onPressed: () => _viewDocumentDetails(document),
+                                        decoration: BoxDecoration(
+                                          color: document['status'] == 'Verified'
+                                              ? Colors.green.shade50
+                                              : Colors.amber.shade50,
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: Text(
+                                          document['status'],
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w500,
+                                            color: document['status'] == 'Verified'
+                                                ? Colors.green.shade700
+                                                : Colors.amber.shade700,
+                                          ),
+                                        ),
                                       ),
                                     ],
+                                  ),
+                                  trailing: IconButton(
+                                    icon: Icon(
+                                      Icons.more_vert,
+                                      color: Colors.grey.shade700,
+                                    ),
+                                    onPressed: () => _viewDocumentDetails(document),
                                   ),
                                   onTap: () => _viewDocumentDetails(document),
                                 ),

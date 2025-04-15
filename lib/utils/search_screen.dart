@@ -13,6 +13,8 @@ import '../screens/PlacementCell/placement_dashboard.dart'; // Import PlacementD
 import '../screens/PlacementCell/view_jobs.dart';
 import '../screens/PlacementCell/placement_schedule.dart';
 import '../screens/PlacementCell/upload_documents.dart'; // Import UploadDocumentsScreen
+import '../screens/PlacementCell/upload_offer_letter.dart'; // Import UploadOfferLetterScreen
+import '../screens/PlacementCell/view_applications.dart'; // Import ViewApplicationsScreen
 
 class SearchScreen extends StatefulWidget {
   final bool autoFocusSearch;
@@ -290,7 +292,7 @@ class _SearchScreenState extends State<SearchScreen> {
         name: 'Upload Offer Letter',
         icon: Icons.insert_drive_file,
         color: Colors.blue.shade700,
-        route: (context) => const PlacementDashboard(),
+        route: (context) => const UploadOfferLetterScreen(),
         parentModule: 'Placement',
         description: 'Upload your offer letters from companies',
       ),
@@ -314,7 +316,7 @@ class _SearchScreenState extends State<SearchScreen> {
         name: 'View Applications',
         icon: Icons.list_alt,
         color: Colors.blue.shade700,
-        route: (context) => const PlacementDashboard(),
+        route: (context) => const ViewApplicationsScreen(),
         parentModule: 'Placement',
         description: 'Track your submitted job applications',
       ),

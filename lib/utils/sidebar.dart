@@ -7,6 +7,8 @@ import '../screens/Examination/result.dart';
 import '../screens/PlacementCell/placement_dashboard.dart'; // Import PlacementDashboard
 import '../screens/PlacementCell/view_jobs.dart'; // Import ViewJobsScreen
 import '../screens/PlacementCell/placement_schedule.dart'; // Import PlacementScheduleScreen
+import '../screens/PlacementCell/upload_offer_letter.dart'; // Import UploadOfferLetterScreen
+import '../screens/PlacementCell/view_applications.dart'; // Import ViewApplicationsScreen
 import 'home.dart'; // Import home screen
 
 
@@ -1011,11 +1013,23 @@ class _SidebarState extends State<Sidebar> {
             context,
             MaterialPageRoute(builder: (context) => const PlacementScheduleScreen()),
           );
+        } else if (index == 39) {
+          // Navigate to Upload Offer Letter screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const UploadOfferLetterScreen()),
+          );
         } else if (index == 40) {
           // Navigate to View Jobs screen
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ViewJobsScreen()),
+          );
+        } else if (index == 42) {
+          // Navigate to View Applications screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ViewApplicationsScreen()),
           );
         }
         // Notify parent about selection
